@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-wpicoursetracker-dev-f38da-authRole",
+      "UnauthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-f38da-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-f38da-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-wpicoursetracker-dev-f38da-deployment",
+      "UnauthRoleName": "amplify-wpicoursetracker-dev-f38da-unauthRole",
+      "StackName": "amplify-wpicoursetracker-dev-f38da",
+      "StackId": "arn:aws:cloudformation:us-east-2:257394489109:stack/amplify-wpicoursetracker-dev-f38da/1f342400-f470-11ef-be08-069e3dab4f3d",
+      "AmplifyAppId": "d3ca3ko0ilv857"
+    }
+  }
+}
