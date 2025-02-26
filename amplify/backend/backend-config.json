@@ -1,5 +1,19 @@
 {
   "api": {
+    "studentViewCourses": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentViewCoursesFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "studentViewEnrollments": {
       "dependsOn": [
         {
@@ -42,6 +56,35 @@
     }
   },
   "function": {
+    "studentViewCoursesFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name"
+          ],
+          "category": "function",
+          "resourceName": "studentViewEnrollmentsFunction"
+        },
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        },
+        {
+          "attributes": [
+            "ApiName",
+            "ApiId"
+          ],
+          "category": "api",
+          "resourceName": "studentViewEnrollments"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "studentViewEnrollmentsFunction": {
       "build": true,
       "dependsOn": [],
@@ -50,6 +93,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_studentViewCoursesFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentViewCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentViewCoursesFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentViewCoursesFunction"
+        }
+      ]
+    },
     "AMPLIFY_function_studentViewEnrollmentsFunction_deploymentBucketName": {
       "usedBy": [
         {

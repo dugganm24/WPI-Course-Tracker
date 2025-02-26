@@ -7,7 +7,14 @@ See the License for the specific language governing permissions and limitations 
 */
 
 
-
+/* Amplify Params - DO NOT EDIT
+	API_STUDENTVIEWENROLLMENTS_APIID
+	API_STUDENTVIEWENROLLMENTS_APINAME
+	AUTH_WPICOURSETRACKER_USERPOOLID
+	ENV
+	FUNCTION_STUDENTVIEWENROLLMENTSFUNCTION_NAME
+	REGION
+Amplify Params - DO NOT EDIT */
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -30,12 +37,12 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/student/viewEnrollments', function(req, res) {
+app.get('/student/viewCourses', function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
 
-app.get('/student/viewEnrollments/*', function(req, res) {
+app.get('/student/viewCourses/*', function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
@@ -44,12 +51,12 @@ app.get('/student/viewEnrollments/*', function(req, res) {
 * Example post method *
 ****************************/
 
-app.post('/student/viewEnrollments', function(req, res) {
+app.post('/student/viewCourses', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
-app.post('/student/viewEnrollments/*', function(req, res) {
+app.post('/student/viewCourses/*', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
@@ -58,12 +65,12 @@ app.post('/student/viewEnrollments/*', function(req, res) {
 * Example put method *
 ****************************/
 
-app.put('/student/viewEnrollments', function(req, res) {
+app.put('/student/viewCourses', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
 
-app.put('/student/viewEnrollments/*', function(req, res) {
+app.put('/student/viewCourses/*', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
@@ -72,12 +79,12 @@ app.put('/student/viewEnrollments/*', function(req, res) {
 * Example delete method *
 ****************************/
 
-app.delete('/student/viewEnrollments', function(req, res) {
+app.delete('/student/viewCourses', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });
 
-app.delete('/student/viewEnrollments/*', function(req, res) {
+app.delete('/student/viewCourses/*', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });

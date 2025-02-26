@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/viewCourses": {
+      "name": "/student/viewCourses",
+      "lambdaFunction": "studentViewCoursesFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

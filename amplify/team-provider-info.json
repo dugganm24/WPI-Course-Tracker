@@ -1,29 +1,34 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-wpicoursetracker-dev-f38da-authRole",
-      "UnauthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-f38da-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-f38da-authRole",
+      "AuthRoleName": "amplify-wpicoursetracker-dev-807ed-authRole",
+      "UnauthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-807ed-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-807ed-authRole",
       "Region": "us-east-2",
-      "DeploymentBucketName": "amplify-wpicoursetracker-dev-f38da-deployment",
-      "UnauthRoleName": "amplify-wpicoursetracker-dev-f38da-unauthRole",
-      "StackName": "amplify-wpicoursetracker-dev-f38da",
-      "StackId": "arn:aws:cloudformation:us-east-2:257394489109:stack/amplify-wpicoursetracker-dev-f38da/1f342400-f470-11ef-be08-069e3dab4f3d",
-      "AmplifyAppId": "d3ca3ko0ilv857",
-      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-wpicoursetracker-dev-f38da-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+      "DeploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+      "UnauthRoleName": "amplify-wpicoursetracker-dev-807ed-unauthRole",
+      "StackName": "amplify-wpicoursetracker-dev-807ed",
+      "StackId": "arn:aws:cloudformation:us-east-2:257394489109:stack/amplify-wpicoursetracker-dev-807ed/e0a2a2b0-f484-11ef-9257-0aa6980f1d93",
+      "AmplifyAppId": "d3awv9jvyxsd1a",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-wpicoursetracker-dev-807ed-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "function": {
         "studentViewEnrollmentsFunction": {
-          "deploymentBucketName": "amplify-wpicoursetracker-dev-f38da-deployment",
-          "s3Key": "amplify-builds/studentViewEnrollmentsFunction-312b6864357441434761-build.zip"
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentViewEnrollmentsFunction-4d4d6f58503875795535-build.zip"
+        },
+        "studentViewCoursesFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentViewCoursesFunction-356c5172617442424451-build.zip"
         }
       },
       "auth": {
         "wpicoursetracker": {}
       },
       "api": {
-        "studentViewEnrollments": {}
+        "studentViewEnrollments": {},
+        "studentViewCourses": {}
       }
     }
   }

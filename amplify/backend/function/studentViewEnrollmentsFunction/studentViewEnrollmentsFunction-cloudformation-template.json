@@ -89,12 +89,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "wpicoursetrackerLambdaRolecc919a06",
+            "wpicoursetrackerLambdaRolec2ccb9d4",
             {
               "Fn::Join": [
                 "",
                 [
-                  "wpicoursetrackerLambdaRolecc919a06",
+                  "wpicoursetrackerLambdaRolec2ccb9d4",
                   "-",
                   {
                     "Ref": "env"

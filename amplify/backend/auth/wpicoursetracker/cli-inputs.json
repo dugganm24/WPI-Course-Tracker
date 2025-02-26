@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "wpicoursetracker_identitypool_c9c2c1ad",
+    "identityPoolName": "wpicoursetracker_identitypool_77e7dea6",
     "allowUnauthenticatedIdentities": false,
-    "resourceNameTruncated": "wpicouc9c2c1ad",
-    "userPoolName": "wpicoursetracker_userpool_c9c2c1ad",
+    "resourceNameTruncated": "wpicou77e7dea6",
+    "userPoolName": "wpicoursetracker_userpool_77e7dea6",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,11 +31,11 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "wpicouc9c2c1ad_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "wpicou77e7dea6_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
     "authSelections": "identityPoolAndUserPool",
     "resourceName": "wpicoursetracker",
-    "sharedId": "c9c2c1ad",
+    "sharedId": "77e7dea6",
     "serviceName": "Cognito",
     "useDefault": "manual"
   }

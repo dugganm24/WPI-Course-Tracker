@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "function": {
+      "studentViewEnrollmentsFunction": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "auth": {
+      "wpicoursetracker": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    },
+    "api": {
+      "studentViewEnrollments": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
