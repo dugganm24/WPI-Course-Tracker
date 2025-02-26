@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/viewEnrollments": {
+      "name": "/student/viewEnrollments",
+      "lambdaFunction": "studentViewEnrollmentsFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

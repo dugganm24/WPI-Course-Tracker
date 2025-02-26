@@ -1,0 +1,30 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-wpicoursetracker-dev-807ed-authRole",
+      "UnauthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-807ed-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::257394489109:role/amplify-wpicoursetracker-dev-807ed-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+      "UnauthRoleName": "amplify-wpicoursetracker-dev-807ed-unauthRole",
+      "StackName": "amplify-wpicoursetracker-dev-807ed",
+      "StackId": "arn:aws:cloudformation:us-east-2:257394489109:stack/amplify-wpicoursetracker-dev-807ed/e0a2a2b0-f484-11ef-9257-0aa6980f1d93",
+      "AmplifyAppId": "d3awv9jvyxsd1a",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-wpicoursetracker-dev-807ed-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
+    },
+    "categories": {
+      "function": {
+        "studentViewEnrollmentsFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentViewEnrollmentsFunction-4d4d6f58503875795535-build.zip"
+        }
+      },
+      "auth": {
+        "wpicoursetracker": {}
+      },
+      "api": {
+        "studentViewEnrollments": {}
+      }
+    }
+  }
+}
