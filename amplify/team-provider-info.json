@@ -27,7 +27,8 @@
         "wpicoursetracker": {}
       },
       "api": {
-        "studentViewEnrollments": {}
+        "studentViewEnrollments": {},
+        "studentViewCourses": {}
       }
     }
   }
