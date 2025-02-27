@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/advisor/viewStudentProgress": {
+      "name": "/advisor/viewStudentProgress",
+      "lambdaFunction": "advisorViewStudentProgressFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

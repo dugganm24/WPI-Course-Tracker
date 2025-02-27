@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/loginAdvisorAccount": {
+      "name": "/loginAdvisorAccount",
+      "lambdaFunction": "loginAdvisorAccountFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

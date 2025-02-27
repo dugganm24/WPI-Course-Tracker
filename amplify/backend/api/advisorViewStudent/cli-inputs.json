@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/advisor/viewStudent": {
+      "name": "/advisor/viewStudent",
+      "lambdaFunction": "advisorViewStudentFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

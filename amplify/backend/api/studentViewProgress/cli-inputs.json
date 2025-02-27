@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/viewProgress": {
+      "name": "/student/viewProgress",
+      "lambdaFunction": "studentViewProgressFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

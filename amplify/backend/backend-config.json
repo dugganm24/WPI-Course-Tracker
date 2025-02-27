@@ -1,5 +1,145 @@
 {
   "api": {
+    "advisorRecommendCourses": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "advisorRecommendCoursesFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "advisorViewStudent": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "advisorViewStudentFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "advisorViewStudentProgress": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "advisorViewStudentProgressFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "loginAdvisorAccount": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "loginAdvisorAccountFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "loginStudentAccount": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "loginStudentAccountFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "openAdvisorAccount": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "openAdvisorAccountFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "openStudentAccount": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "openStudentAccountFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "studentEnrollStudent": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentEnrollStudentFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "studentRecommendCourses": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentRecommendCoursesFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "studentUpdateProgress": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentUpdateProgressFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "studentViewCourses": {
       "dependsOn": [
         {
@@ -23,6 +163,20 @@
           ],
           "category": "function",
           "resourceName": "studentViewEnrollmentsFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "studentViewProgress": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentViewProgressFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -56,6 +210,151 @@
     }
   },
   "function": {
+    "advisorRecommendCoursesFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "advisorViewStudentFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "advisorViewStudentProgressFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "loginAdvisorAccountFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "loginStudentAccountFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "openAdvisorAccountFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "openStudentAccountFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studentEnrollStudentFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studentRecommendCoursesFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studentRequestAdvisorHelpFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "studentUpdateProgressFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "studentViewCoursesFunction": {
       "build": true,
       "dependsOn": [
@@ -90,9 +389,199 @@
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "studentViewProgressFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
+    "AMPLIFY_function_advisorRecommendCoursesFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorRecommendCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorRecommendCoursesFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorRecommendCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorViewStudentFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorViewStudentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorViewStudentFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorViewStudentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorViewStudentProgressFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorViewStudentProgressFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorViewStudentProgressFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorViewStudentProgressFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_loginAdvisorAccountFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loginAdvisorAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_loginAdvisorAccountFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loginAdvisorAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_loginStudentAccountFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loginStudentAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_loginStudentAccountFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "loginStudentAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_openAdvisorAccountFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "openAdvisorAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_openAdvisorAccountFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "openAdvisorAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_openStudentAccountFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "openStudentAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_openStudentAccountFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "openStudentAccountFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentEnrollStudentFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentEnrollStudentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentEnrollStudentFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentEnrollStudentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentRecommendCoursesFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentRecommendCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentRecommendCoursesFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentRecommendCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentRequestAdvisorHelpFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentRequestAdvisorHelpFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentRequestAdvisorHelpFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentRequestAdvisorHelpFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentUpdateProgressFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentUpdateProgressFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentUpdateProgressFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentUpdateProgressFunction"
+        }
+      ]
+    },
     "AMPLIFY_function_studentViewCoursesFunction_deploymentBucketName": {
       "usedBy": [
         {
@@ -122,6 +611,22 @@
         {
           "category": "function",
           "resourceName": "studentViewEnrollmentsFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentViewProgressFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentViewProgressFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_studentViewProgressFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "studentViewProgressFunction"
         }
       ]
     }

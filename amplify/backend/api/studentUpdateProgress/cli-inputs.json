@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/updateProgress": {
+      "name": "/student/updateProgress",
+      "lambdaFunction": "studentUpdateProgressFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

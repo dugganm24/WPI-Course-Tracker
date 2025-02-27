@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/recommendCourses": {
+      "name": "/student/recommendCourses",
+      "lambdaFunction": "studentRecommendCoursesFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/openStudentAccount": {
+      "name": "/openStudentAccount",
+      "lambdaFunction": "openStudentAccountFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

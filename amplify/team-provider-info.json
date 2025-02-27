@@ -21,6 +21,54 @@
         "studentViewCoursesFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
           "s3Key": "amplify-builds/studentViewCoursesFunction-356c5172617442424451-build.zip"
+        },
+        "openStudentAccountFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/openStudentAccountFunction-797034334f484a495077-build.zip"
+        },
+        "loginStudentAccountFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/loginStudentAccountFunction-6557494f56374e6e7762-build.zip"
+        },
+        "studentRecommendCoursesFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentRecommendCoursesFunction-6743386330554d566668-build.zip"
+        },
+        "studentUpdateProgressFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentUpdateProgressFunction-357533595a33356f7666-build.zip"
+        },
+        "studentViewProgressFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentViewProgressFunction-5a374a6f425763395651-build.zip"
+        },
+        "studentEnrollStudentFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentEnrollStudentFunction-7166754434664a437634-build.zip"
+        },
+        "openAdvisorAccountFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/openAdvisorAccountFunction-5a3450446e496950696f-build.zip"
+        },
+        "loginAdvisorAccountFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/loginAdvisorAccountFunction-4151544d644545426945-build.zip"
+        },
+        "advisorViewStudentProgressFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/advisorViewStudentProgressFunction-656559593979426e484d-build.zip"
+        },
+        "advisorRecommendCoursesFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/advisorRecommendCoursesFunction-7a3237506e424435426f-build.zip"
+        },
+        "advisorViewStudentFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/advisorViewStudentFunction-51762f54484a65522b37-build.zip"
+        },
+        "studentRequestAdvisorHelpFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentRequestAdvisorHelpFunction-58327a2b59594a6c5141-build.zip"
         }
       },
       "auth": {
@@ -28,7 +76,18 @@
       },
       "api": {
         "studentViewEnrollments": {},
-        "studentViewCourses": {}
+        "studentViewCourses": {},
+        "openStudentAccount": {},
+        "loginStudentAccount": {},
+        "studentRecommendCourses": {},
+        "studentUpdateProgress": {},
+        "studentViewProgress": {},
+        "studentEnrollStudent": {},
+        "openAdvisorAccount": {},
+        "loginAdvisorAccount": {},
+        "advisorViewStudentProgress": {},
+        "advisorRecommendCourses": {},
+        "advisorViewStudent": {}
       }
     }
   }

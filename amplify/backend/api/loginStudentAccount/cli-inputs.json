@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/loginStudentAccount": {
+      "name": "/loginStudentAccount",
+      "lambdaFunction": "loginStudentAccountFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}
