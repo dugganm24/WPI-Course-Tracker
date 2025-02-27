@@ -17,6 +17,10 @@
         "studentViewEnrollmentsFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
           "s3Key": "amplify-builds/studentViewEnrollmentsFunction-4d4d6f58503875795535-build.zip"
+        },
+        "studentViewCoursesFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/studentViewCoursesFunction-356c5172617442424451-build.zip"
         }
       },
       "auth": {
