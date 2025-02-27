@@ -1,3 +1,13 @@
 {
-  "lambdaLayers": []
+  "lambdaLayers": [],
+  "permissions": {
+    "auth": {
+      "wpicoursetracker": [
+        "create",
+        "read",
+        "update",
+        "delete"
+      ]
+    }
+  }
 }

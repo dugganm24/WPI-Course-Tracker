@@ -34,12 +34,12 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/student/requestAdvisorHelp', function(req, res) {
+app.get('/advisor/respondToStudentRequest', function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
 
-app.get('/student/requestAdvisorHelp/*', function(req, res) {
+app.get('/advisor/respondToStudentRequest/*', function(req, res) {
   // Add your code here
   res.json({success: 'get call succeed!', url: req.url});
 });
@@ -48,12 +48,12 @@ app.get('/student/requestAdvisorHelp/*', function(req, res) {
 * Example post method *
 ****************************/
 
-app.post('/student/requestAdvisorHelp', function(req, res) {
+app.post('/advisor/respondToStudentRequest', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
 
-app.post('/student/requestAdvisorHelp/*', function(req, res) {
+app.post('/advisor/respondToStudentRequest/*', function(req, res) {
   // Add your code here
   res.json({success: 'post call succeed!', url: req.url, body: req.body})
 });
@@ -62,12 +62,12 @@ app.post('/student/requestAdvisorHelp/*', function(req, res) {
 * Example put method *
 ****************************/
 
-app.put('/student/requestAdvisorHelp', function(req, res) {
+app.put('/advisor/respondToStudentRequest', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
 
-app.put('/student/requestAdvisorHelp/*', function(req, res) {
+app.put('/advisor/respondToStudentRequest/*', function(req, res) {
   // Add your code here
   res.json({success: 'put call succeed!', url: req.url, body: req.body})
 });
@@ -76,12 +76,12 @@ app.put('/student/requestAdvisorHelp/*', function(req, res) {
 * Example delete method *
 ****************************/
 
-app.delete('/student/requestAdvisorHelp', function(req, res) {
+app.delete('/advisor/respondToStudentRequest', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });
 
-app.delete('/student/requestAdvisorHelp/*', function(req, res) {
+app.delete('/advisor/respondToStudentRequest/*', function(req, res) {
   // Add your code here
   res.json({success: 'delete call succeed!', url: req.url});
 });

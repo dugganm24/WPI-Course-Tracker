@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/student/requestAdvisorHelp": {
+      "name": "/student/requestAdvisorHelp",
+      "lambdaFunction": "studentRequestAdvisorHelpFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

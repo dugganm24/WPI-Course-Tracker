@@ -14,6 +14,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "advisorRespondToStudentRequest": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "advisorRespondToStudentRequestFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "advisorViewStudent": {
       "dependsOn": [
         {
@@ -126,6 +140,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "studentRequestAdvisorHelp": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "studentRequestAdvisorHelpFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "studentUpdateProgress": {
       "dependsOn": [
         {
@@ -211,6 +239,20 @@
   },
   "function": {
     "advisorRecommendCoursesFunction": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "advisorRespondToStudentRequestFunction": {
       "build": true,
       "dependsOn": [
         {
@@ -338,6 +380,15 @@
     },
     "studentRequestAdvisorHelpFunction": {
       "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
@@ -386,7 +437,15 @@
     },
     "studentViewEnrollmentsFunction": {
       "build": true,
-      "dependsOn": [],
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "wpicoursetracker"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
@@ -419,6 +478,22 @@
         {
           "category": "function",
           "resourceName": "advisorRecommendCoursesFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorRespondToStudentRequestFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorRespondToStudentRequestFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_advisorRespondToStudentRequestFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "advisorRespondToStudentRequestFunction"
         }
       ]
     },

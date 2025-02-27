@@ -16,7 +16,7 @@
       "function": {
         "studentViewEnrollmentsFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
-          "s3Key": "amplify-builds/studentViewEnrollmentsFunction-4d4d6f58503875795535-build.zip"
+          "s3Key": "amplify-builds/studentViewEnrollmentsFunction-4243336c3370387a6d6a-build.zip"
         },
         "studentViewCoursesFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
@@ -68,7 +68,11 @@
         },
         "studentRequestAdvisorHelpFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
-          "s3Key": "amplify-builds/studentRequestAdvisorHelpFunction-58327a2b59594a6c5141-build.zip"
+          "s3Key": "amplify-builds/studentRequestAdvisorHelpFunction-5377423861666a4d6930-build.zip"
+        },
+        "advisorRespondToStudentRequestFunction": {
+          "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
+          "s3Key": "amplify-builds/advisorRespondToStudentRequestFunction-70752b763359744d7463-build.zip"
         }
       },
       "auth": {
@@ -87,7 +91,9 @@
         "loginAdvisorAccount": {},
         "advisorViewStudentProgress": {},
         "advisorRecommendCourses": {},
-        "advisorViewStudent": {}
+        "advisorViewStudent": {},
+        "studentRequestAdvisorHelp": {},
+        "advisorRespondToStudentRequest": {}
       }
     }
   }

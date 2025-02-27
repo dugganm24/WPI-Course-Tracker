@@ -51,12 +51,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "studentRequestAdvisorHelpFunction",
+            "advisorRespondToStudentRequestFunction",
             {
               "Fn::Join": [
                 "",
                 [
-                  "studentRequestAdvisorHelpFunction",
+                  "advisorRespondToStudentRequestFunction",
                   "-",
                   {
                     "Ref": "env"
@@ -96,12 +96,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "wpicoursetrackerLambdaRole159c3869",
+            "wpicoursetrackerLambdaRolee984dc43",
             {
               "Fn::Join": [
                 "",
                 [
-                  "wpicoursetrackerLambdaRole159c3869",
+                  "wpicoursetrackerLambdaRolee984dc43",
                   "-",
                   {
                     "Ref": "env"

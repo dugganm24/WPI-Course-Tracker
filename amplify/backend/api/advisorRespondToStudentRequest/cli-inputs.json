@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "paths": {
+    "/advisor/respondToStudentRequest": {
+      "name": "/advisor/respondToStudentRequest",
+      "lambdaFunction": "advisorRespondToStudentRequestFunction",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create",
+          "read",
+          "update",
+          "delete"
+        ]
+      }
+    }
+  }
+}

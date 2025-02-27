@@ -5,6 +5,11 @@ export type AmplifyDependentResourcesAttributes = {
       "ApiName": "string",
       "RootUrl": "string"
     },
+    "advisorRespondToStudentRequest": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    },
     "advisorViewStudent": {
       "ApiId": "string",
       "ApiName": "string",
@@ -45,6 +50,11 @@ export type AmplifyDependentResourcesAttributes = {
       "ApiName": "string",
       "RootUrl": "string"
     },
+    "studentRequestAdvisorHelp": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    },
     "studentUpdateProgress": {
       "ApiId": "string",
       "ApiName": "string",
@@ -79,6 +89,13 @@ export type AmplifyDependentResourcesAttributes = {
   },
   "function": {
     "advisorRecommendCoursesFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "advisorRespondToStudentRequestFunction": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
