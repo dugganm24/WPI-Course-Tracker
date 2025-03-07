@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Authenticator,
   View,
@@ -10,14 +10,15 @@ import {
   RadioGroupField,
   Radio,
   useAuthenticator,
-} from "@aws-amplify/ui-react";
-import "@aws-amplify/ui-react/styles.css";
-import { Amplify } from "aws-amplify";
-import config from "@/amplifyconfiguration.json";
+} from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import { Amplify } from 'aws-amplify';
+// import config from "@/amplifyconfiguration.json";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
+import outputs from '../aws-exports';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 
-Amplify.configure(config);
+Amplify.configure(outputs);
 
 // function getUsernameFromToken(idToken: string) {
 //   if (idToken) {
