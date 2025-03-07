@@ -1,101 +1,279 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Authenticator,
+  View,
+  Text,
+  Button,
+  RadioGroupField,
+  Radio,
+  useAuthenticator,
+} from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
+import { Amplify } from 'aws-amplify';
+// import config from "@/amplifyconfiguration.json";
+import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
+import outputs from '../aws-exports';
+// import { jwtDecode, JwtPayload } from "jwt-decode";
+
+Amplify.configure(outputs);
+
+// function getUsernameFromToken(idToken: string) {
+//   if (idToken) {
+//       const decoded = jwtDecode<JwtPayload & { "cognito:username": string }>(idToken);
+//       return decoded["cognito:username"];
+//   }
+//   return null;
+// }
+
+// interface UserData {
+//   username: string;
+//   email: string | null;
+//   firstName: string | null;
+//   lastName: string | null;
+//   accountType: string | null;
+// }
+
+const AuthenticatedUserActions = () => {
+  // const router = useRouter();
+  const { user, signOut } = useAuthenticator();
+  // const [email, setEmail] = useState<string | null>(null);
+  // const [accountType, setAccountType] = useState<string | null>(null);
+  // const [firstName, setFirstName] = useState<string | null>(null);
+  // const [lastName, setLastName] = useState<string | null>(null);
+
+  async function currentSession() {
+    try {
+      const { accessToken, idToken } = (await fetchAuthSession()).tokens ?? {};
+      console.log("Access Token:", accessToken);
+      console.log("ID Token:", idToken);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  interface UserData {
+    username: string;
+    email: string | null;
+    firstName: string | null;
+    lastName: string | null;
+    accountType: string | null;
+  }
+
+  const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
+    try {
+      const response = await fetch(
+        "https://4o8m1mc4cg.execute-api.us-east-2.amazonaws.com/dev/openStudentAccount",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
+
+      const data = await response.json();
+      console.log("Lambda Response:", data);
+    } catch (error) {
+      console.error("Error sending data to Lambda:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        const userAttributes = await fetchUserAttributes();
+        console.log("Email:", userAttributes.email);
+        console.log("Account Type:", userAttributes["custom:account_type"]);
+        console.log("First Name:", userAttributes.given_name);
+        console.log("Last Name:", userAttributes.family_name);
+        console.log("User Attributes:", userAttributes);
+        // setEmail(userAttributes.email ?? null);
+        // setFirstName(userAttributes.given_name ?? null);
+        // setLastName(userAttributes.family_name ?? null);
+        // setAccountType(userAttributes["custom:account_type"] ?? null);
+
+        const userData = {
+          username: currentUser.username,
+          email: userAttributes.email ?? null,
+          firstName: userAttributes.given_name ?? null,
+          lastName: userAttributes.family_name ?? null,
+          accountType: userAttributes["custom:account_type"] ?? null,
+        };
+
+        // Call Lambda function with user data
+        await sendUserDataToBackend(userData);
+
+        currentSession();
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+    fetchUserData();
+  }, [sendUserDataToBackend]);
+
+  if (!user) return null;
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+    <div className="flex items-center">
+      <span className="text-white mr-4">Hello, {user.username}!</span>
+      <button
+        onClick={signOut}
+        className="bg-white text-red-600 font-bold py-2 px-4 rounded hover:bg-gray-200"
+      >
+        Sign Out
+      </button>
     </div>
   );
+};
+
+const UserNavigation = () => {
+  const router = useRouter();
+  const { user } = useAuthenticator();
+
+  if (!user) return null;
+
+  return (
+    <div className="flex flex-col bg-red-00 min-h-screen">
+      <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+        <Button onClick={() => router.push("/")} variation="primary"
+          className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
+        >
+          Home
+        </Button>
+        <Button onClick={() => router.push("/student/courses")} variation="primary"
+          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+        >
+          My Courses
+        </Button>
+        <Button onClick={() => router.push("/student/progress")} variation="primary"
+          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
+          My Progress
+        </Button>
+        <Button onClick={() => router.push("/student/allCourses")} variation="primary"
+          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
+          All Courses
+        </Button>
+      </nav>
+    </div>
+  );
+};
+
+const SignUpFormFields = ({ updateForm }: { updateForm: (field: string, value: string) => void }) => {
+  const { validationErrors } = useAuthenticator();
+  const [formData, setFormData] = useState({
+    username: "",
+    given_name: "",
+    family_name: "",
+    email: "",
+    password: "",
+    accountType: "",
+  });
+
+  const handleChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    updateForm(field, value);
+  };
+
+  return (
+    <>
+      <Authenticator.SignUp.FormFields />
+      <RadioGroupField
+        legend="Select Account Type"
+        name="custom:account_type"
+        isRequired
+        value={formData.accountType}
+        onChange={(e) => handleChange("accountType", e.target.value)}
+        errorMessage={validationErrors.account_type as string}
+        hasError={!!validationErrors.account_type}
+      >
+        <Radio value="student">Student</Radio>
+        <Radio value="advisor">Advisor</Radio>
+      </RadioGroupField>
+    </>
+  );
+};
+
+const components = {
+  Header() {
+    return <View textAlign="center"></View>;
+  },
+  Footer() {
+    return (
+      <View textAlign="center" padding="20px">
+        <Text>&copy; All Rights Reserved</Text>
+      </View>
+    );
+  },
+  SignIn: {
+    Footer() {
+      const { toForgotPassword } = useAuthenticator();
+      return (
+        <View textAlign="center">
+          <Button onClick={toForgotPassword} size="small" variation="link">
+            Reset Password
+          </Button>
+        </View>
+      );
+    },
+  },
+  SignUp: {
+    FormFields: () => <SignUpFormFields updateForm={() => { }} />,
+    Footer() {
+      const { toSignIn } = useAuthenticator();
+      return (
+        <View textAlign="center">
+          <Button onClick={toSignIn} size="small" variation="link">
+            Back to Sign In
+          </Button>
+        </View>
+      );
+    },
+  },
+};
+
+const formFields = {
+  signIn: {
+    username: {
+      placeholder: 'Enter your email',
+    },
+  },
+  signUp: {
+    given_name: {
+      label: 'First Name:',
+      placeholder: 'Enter your first name',
+      isRequired: false,
+    },
+    family_name: {
+      label: 'Family Name:',
+      placeholder: 'Enter your Last Name',
+      isRequired: false,
+    },
+  }
+};
+
+export default function App() {
+  return (
+    <Authenticator.Provider>
+      <div className="min-h-screen flex flex-col bg-red-100">
+        <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6 mb-4">
+          <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
+          <AuthenticatedUserActions />
+        </header>
+        <div className="flex flex-col justify-center items-center flex-grow">
+          <div className="max-w-md w-full flex flex-col items-center">
+            <Authenticator initialState="signIn" components={components} formFields={formFields} className="w-full" />
+            <UserNavigation />
+          </div>
+        </div>
+      </div>
+    </Authenticator.Provider>
+  );
 }
+
+// Removed the local useCallback function as it conflicts with the imported one.
+

@@ -19,3 +19,40 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+[data-amplify-authenticator] {
+  --amplify-components-authenticator-router-box-shadow: 0 0 16px rgba(255, 0, 0, 0.1);
+  --amplify-components-authenticator-router-border-width: 0;
+  --amplify-components-authenticator-form-padding: var(--amplify-space-medium) var(--amplify-space-xl) var(--amplify-space-xl);
+  --amplify-components-button-primary-background-color: #ff0000;
+  --amplify-components-fieldcontrol-focus-box-shadow: 0 0 0 2px #ff0000;
+  --amplify-components-tabs-item-active-border-color: #ff0000;
+  --amplify-components-tabs-item-color: #800000;
+  --amplify-components-tabs-item-active-color: #ff0000;
+  --amplify-components-button-link-color: #ff0000;
+}
+
+.amplify-button--primary:hover {
+  background-color:  #800000; /* Change this to your desired hover color */
+}
+
+
+.amplify-button:focus, button:focus {
+  outline: none !important; /* Remove blue focus outline */
+  box-shadow: none !important; /* Remove extra styling */
+}
+
+.nav-button{
+  background-color: #dc2626 !important; /* Red */
+  color: white !important; /* White text */
+  border: none !important; /* Remove blue borders */
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: red !important; /* Darker red */
+}
