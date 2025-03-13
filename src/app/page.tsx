@@ -13,9 +13,17 @@ import {
 } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
-import config from "@/amplifyconfiguration.json";
+
+// Check if the files exist
+import fs from "fs";
+console.log(fs.existsSync("../amplifyconfiguration.json")); // Should print true
+console.log(fs.existsSync("../aws-exports.js")); // Should print true
+
+
+import config from "../amplifyconfiguration.json";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
-import outputs from '@/aws-exports';
+import outputs from '../aws-exports';
+
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 
 Amplify.configure(outputs);
