@@ -15,7 +15,7 @@ import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
 import config from "@/amplifyconfiguration.json";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
-import outputs from '../aws-exports';
+import outputs from '@/aws-exports';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 
 Amplify.configure(outputs);
