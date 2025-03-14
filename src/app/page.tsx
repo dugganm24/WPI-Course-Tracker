@@ -22,7 +22,6 @@ import { Amplify } from 'aws-amplify';
 
 import config from "../aws-exports.js";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
-import outputs from '../aws-exports';
 
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 
@@ -37,8 +36,9 @@ Amplify.configure(config);
 // }
 
 
-const AuthenticatedUserActions = () => {;
-  const { user, signOut } = useAuthenticator();
+const AuthenticatedUserActions = () => {
+  ;
+  const { user, signOut} = useAuthenticator();
 
   async function currentSession() {
     try {
@@ -56,6 +56,7 @@ const AuthenticatedUserActions = () => {;
     firstName: string | null;
     lastName: string | null;
     accountType: string | null;
+    wpiID: string | number;
   }
 
   const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
@@ -85,6 +86,7 @@ const AuthenticatedUserActions = () => {;
         const userAttributes = await fetchUserAttributes();
         console.log("Email:", userAttributes.email);
         const accountType = userAttributes["custom:account_type"];
+        const wpiID = userAttributes["custom:wpiID"];
         console.log("Account Type:", accountType);
         console.log("First Name:", userAttributes.given_name);
         console.log("Last Name:", userAttributes.family_name);
@@ -96,6 +98,7 @@ const AuthenticatedUserActions = () => {;
           firstName: userAttributes.given_name ?? null,
           lastName: userAttributes.family_name ?? null,
           accountType: accountType ?? null,
+          wpiID: wpiID ?? 0,
         };
 
         // Call Lambda function with user data
@@ -152,7 +155,7 @@ const UserNavigation = () => {
     <div className="flex flex-col bg-red-00 min-h-screen">
       <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
         <Button
-          onClick={() => router.push("/")}
+          onClick={() => (window.location.href = "/")}
           variation="primary"
           className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
         >
@@ -266,20 +269,26 @@ const components = {
 const formFields = {
   signIn: {
     username: {
-      placeholder: 'Enter your email',
+      placeholder: 'Enter your Username',
     },
   },
   signUp: {
     given_name: {
       label: 'First Name:',
-      placeholder: 'Enter your first name',
+      placeholder: 'Enter your First name',
       isRequired: false,
     },
     family_name: {
-      label: 'Family Name:',
+      label: 'Last Name:',
       placeholder: 'Enter your Last Name',
       isRequired: false,
     },
+    "custom:wpiID": {
+      label: 'WPI ID:',
+      placeholder: 'Enter your WPI ID',
+      isRequired: true,
+    },
+
   }
 };
 
