@@ -24,7 +24,7 @@ const wpiMajors = [
 ];
 
 const AllCoursesPage = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const router = useRouter();
@@ -73,18 +73,18 @@ const AllCoursesPage = () => {
         checkAuth();
     }, [router, pathname]);
 
-    if (isAuthenticated === null || accountType === null) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p className="text-xl font-bold">Checking authentication...</p>
-            </div>
-        );
-    }
+    // if (isAuthenticated === null || accountType === null) {
+    //     return (
+    //         <div className="flex justify-center items-center h-screen">
+    //             <p className="text-xl font-bold">Checking authentication...</p>
+    //         </div>
+    //     );
+    // }
 
 
-    if (!isAuthenticated) {
-        return null; // Avoid rendering anything until authentication is confirmed
-    }
+    // if (!isAuthenticated) {
+    //     return null; // Avoid rendering anything until authentication is confirmed
+    // }
 
     return (
         <>
