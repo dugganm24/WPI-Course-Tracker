@@ -13,14 +13,13 @@ import {
 } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
-
-
-import config from "../aws-exports.js";
+// import config from '../amplifyconfiguration.json';
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
-
+import outputs from '../aws-exports';
 // import { jwtDecode, JwtPayload } from "jwt-decode";
 
-Amplify.configure(config);
+
+Amplify.configure(outputs);
 
 // function getUsernameFromToken(idToken: string) {
 //   if (idToken) {
@@ -30,10 +29,21 @@ Amplify.configure(config);
 //   return null;
 // }
 
+// interface UserData {
+//   username: string;
+//   email: string | null;
+//   firstName: string | null;
+//   lastName: string | null;
+//   accountType: string | null;
+// }
 
 const AuthenticatedUserActions = () => {
-  ;
-  const { user, signOut} = useAuthenticator();
+  // const router = useRouter();
+  const { user, signOut } = useAuthenticator();
+  // const [email, setEmail] = useState<string | null>(null);
+  // const [accountType, setAccountType] = useState<string | null>(null);
+  // const [firstName, setFirstName] = useState<string | null>(null);
+  // const [lastName, setLastName] = useState<string | null>(null);
 
   async function currentSession() {
     try {
@@ -51,7 +61,6 @@ const AuthenticatedUserActions = () => {
     firstName: string | null;
     lastName: string | null;
     accountType: string | null;
-    wpiID: string | number;
   }
 
   const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
@@ -80,20 +89,22 @@ const AuthenticatedUserActions = () => {
         const currentUser = await getCurrentUser();
         const userAttributes = await fetchUserAttributes();
         console.log("Email:", userAttributes.email);
-        const accountType = userAttributes["custom:account_type"];
-        const wpiID = userAttributes["custom:wpiID"];
-        console.log("Account Type:", accountType);
+        console.log("Account Type:", userAttributes["custom:account_type"]);
         console.log("First Name:", userAttributes.given_name);
         console.log("Last Name:", userAttributes.family_name);
         console.log("User Attributes:", userAttributes);
+        console.log('verify this:', outputs);
+        // setEmail(userAttributes.email ?? null);
+        // setFirstName(userAttributes.given_name ?? null);
+        // setLastName(userAttributes.family_name ?? null);
+        // setAccountType(userAttributes["custom:account_type"] ?? null);
 
         const userData = {
           username: currentUser.username,
           email: userAttributes.email ?? null,
           firstName: userAttributes.given_name ?? null,
           lastName: userAttributes.family_name ?? null,
-          accountType: accountType ?? null,
-          wpiID: wpiID ?? 0,
+          accountType: userAttributes["custom:account_type"] ?? null,
         };
 
         // Call Lambda function with user data
@@ -125,62 +136,28 @@ const AuthenticatedUserActions = () => {
 const UserNavigation = () => {
   const router = useRouter();
   const { user } = useAuthenticator();
-  const [accountType, setAccountType] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAccountType = async () => {
-      try {
-        const userAttributes = await fetchUserAttributes();
-        const accountTypeValue = userAttributes["custom:account_type"];
-        setAccountType(accountTypeValue ?? null);
-        console.log("Fetched Account Type:", accountTypeValue);
-      } catch (error) {
-        console.error("Error fetching account type:", error);
-      }
-    };
-
-    if (user) {
-      fetchAccountType();
-    }
-  }, [user]);
-
-  if (!user || !accountType) return null; // Ensures the navigation loads only when accountType is available
+  if (!user) return null;
 
   return (
     <div className="flex flex-col bg-red-00 min-h-screen">
       <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
-        <Button
-          onClick={() => (window.location.href = "/")}
-          variation="primary"
+        <Button onClick={() => router.push("/")} variation="primary"
           className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
         >
           Home
         </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/courses" : "/advisor/courses")
-          }
-          variation="primary"
+        <Button onClick={() => router.push("/student/courses")} variation="primary"
           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
         >
           My Courses
         </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/progress" : "/advisor/progress")
-          }
-          variation="primary"
-          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-        >
+        <Button onClick={() => router.push("/student/progress")} variation="primary"
+          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
           My Progress
         </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/allcourses" : "/advisor/allcourses")
-          }
-          variation="primary"
-          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-        >
+        <Button onClick={() => router.push("/student/allourses")} variation="primary"
+          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
           All Courses
         </Button>
       </nav>
@@ -264,26 +241,20 @@ const components = {
 const formFields = {
   signIn: {
     username: {
-      placeholder: 'Enter your Username',
+      placeholder: 'Enter your email',
     },
   },
   signUp: {
     given_name: {
       label: 'First Name:',
-      placeholder: 'Enter your First name',
+      placeholder: 'Enter your first name',
       isRequired: false,
     },
     family_name: {
-      label: 'Last Name:',
+      label: 'Family Name:',
       placeholder: 'Enter your Last Name',
       isRequired: false,
     },
-    "custom:wpiID": {
-      label: 'WPI ID:',
-      placeholder: 'Enter your WPI ID',
-      isRequired: true,
-    },
-
   }
 };
 
@@ -306,5 +277,5 @@ export default function App() {
   );
 }
 
-
+// Removed the local useCallback function as it conflicts with the imported one.
 
