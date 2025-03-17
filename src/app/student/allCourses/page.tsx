@@ -27,7 +27,6 @@ const AllCoursesPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const router = useRouter();
     const pathname = usePathname(); // Get the current page path
 
@@ -41,7 +40,6 @@ const AllCoursesPage = () => {
                     console.log("Authentication successful");
                     console.log(localStorage.getItem('amplify-authenticator-authState'));
                     console.log(localStorage.getItem('CognitoIdentityServiceProvider.<your_user_pool_id>.LastAuthUser'));
-                    setIsAuthenticated(true);
 
                     // Fetch user attributes
                     const userAttributes = await fetchUserAttributes();
