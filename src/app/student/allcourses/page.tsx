@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth";
@@ -24,67 +24,43 @@ const wpiMajors = [
 ];
 
 const AllCoursesPage = () => {
-    // const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const router = useRouter();
-    const pathname = usePathname(); // Get the current page path
 
     useEffect(() => {
-        const checkAuth = async (retryCount = 0) => {
+        console.log("Fetching user authentication...");
+        const checkAuth = async () => {
             try {
-                console.log("Checking authentication... Attempt:", retryCount + 1);
                 const session = await fetchAuthSession();
-
                 if (session.tokens?.idToken) {
-                    console.log("Authentication successful");
-                    console.log(localStorage.getItem('amplify-authenticator-authState'));
-                    console.log(localStorage.getItem('CognitoIdentityServiceProvider.<your_user_pool_id>.LastAuthUser'));
+                    setIsAuthenticated(true);
 
-                    // Fetch user attributes
+                    // Fetch account type using the same method as the login page
                     const userAttributes = await fetchUserAttributes();
                     const fetchedAccountType = userAttributes["custom:account_type"] || "student";
                     console.log("Fetched Account Type:", fetchedAccountType);
                     setAccountType(fetchedAccountType);
-
-                    // Restore last visited page only if redirected
-                    const lastRoute = sessionStorage.getItem("lastRoute");
-                    if (lastRoute && lastRoute !== pathname) {
-                        sessionStorage.removeItem("lastRoute");
-                        router.push(lastRoute);
-                    }
                 } else {
-                    throw new Error("No valid session");
-                }
-            } catch (err) {
-                console.error("Authentication failed:", err);
-
-                // Retry up to 3 times in case authentication is slow
-                if (retryCount < 3) {
-                    setTimeout(() => checkAuth(retryCount + 1), 1000);
-                } else {
-                    console.log("Redirecting to home after multiple authentication failures.");
-                    sessionStorage.setItem("lastRoute", pathname);
                     router.push("/");
                 }
+            } catch (err) {
+                console.error("Error checking auth session:", err);
+                router.push("/");
             }
         };
 
         checkAuth();
-    }, [router, pathname]);
+    }, [router]);
 
-    // if (isAuthenticated === null || accountType === null) {
-    //     return (
-    //         <div className="flex justify-center items-center h-screen">
-    //             <p className="text-xl font-bold">Checking authentication...</p>
-    //         </div>
-    //     );
-    // }
-
-
-    // if (!isAuthenticated) {
-    //     return null; // Avoid rendering anything until authentication is confirmed
-    // }
+    if (isAuthenticated === null || accountType === null) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-xl font-bold">Checking authentication...</p>
+            </div>
+        );
+    }
 
     return (
         <>
