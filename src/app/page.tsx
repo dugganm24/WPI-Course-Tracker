@@ -14,11 +14,6 @@ import {
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
 
-// Check if the files exist
-// import fs from "fs";
-// console.log(fs.existsSync("../amplifyconfiguration.json")); // Should print true
-// console.log(fs.existsSync("../aws-exports.js")); // Should print true
-
 
 import config from "../aws-exports.js";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
