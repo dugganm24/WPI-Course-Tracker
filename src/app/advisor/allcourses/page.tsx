@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { fetchAuthSession, fetchUserAttributes, getCurrentUser } from "aws-amplify/auth";
+import { fetchAuthSession, fetchUserAttributes} from "aws-amplify/auth";
 import { Menu, X } from "lucide-react";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
@@ -28,7 +28,7 @@ const wpiMajors = [
 ];
 
 const AllCoursesPage = () => {
-    const [user, setUser] = useState<any>(null);
+    // const [user, setUser] = useState<any>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -45,8 +45,8 @@ const AllCoursesPage = () => {
                     return;
                 }
 
-                const currentUser = await getCurrentUser();
-                setUser(currentUser);
+                // const currentUser = await getCurrentUser();
+                // setUser(currentUser);
                 setIsAuthenticated(true);
 
                 const attributes = await fetchUserAttributes();
