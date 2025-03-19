@@ -28,7 +28,7 @@ exports.handler = async (event) => {
     await connection.beginTransaction();
 
     const query = `
-      SELECT e.enrollment_id, e.display_course_id, e.term, e.grade, c.course_section_owner
+      SELECT e.enrollment_id, e.display_course_id, e.term, e.grade, c.course_section_owner, c.academic_units
       FROM Enrollment e
       JOIN Courses c ON e.course_id = c.id
       WHERE e.student_id = ?
