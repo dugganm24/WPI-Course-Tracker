@@ -38,11 +38,11 @@ exports.handler = async (event) => {
 
     // Check if course exists
     const [courseRows] = await connection.execute(
-      'SELECT id, course_id FROM Courses WHERE course_id = ?',
+      'SELECT id, course_id FROM Courses WHERE course_id = ? AND credits IS NOT NULL AND credits <> 0 AND section_status = "open" AND term IS NOT NULL',
       [courseID]
     );
     if (courseRows.length === 0) {
-      throw new Error('Course not found');
+      throw new Error('No valid course with given criteria');
     }
 
     const coursePrimaryKey = courseRows[0].id;
