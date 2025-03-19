@@ -48,6 +48,16 @@ exports.handler = async (event) => {
     const coursePrimaryKey = courseRows[0].id;
     const actualCourseID = courseRows[0].course_id;
 
+    // Check if student already enrolled in course
+    const [existingEnrollment] = await connection.execute(
+      'SELECT * FROM Enrollment WHERE student_id = ? and course_id = ?',
+      [studentID, coursePrimaryKey]
+    );
+
+    if (existingEnrollment.length > 0) {
+      throw new Error('Student is already enrolled in this course');
+    }
+
     // Insert new enrollment
     await connection.execute(
       'INSERT INTO Enrollment (student_id, course_id, term, display_course_id) VALUES (?, ?, ?, ?)',
