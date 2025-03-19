@@ -54,6 +54,8 @@ exports.handler = async (event) => {
       [studentID, coursePrimaryKey, term, actualCourseID]
     );
 
+    // Placeholder for updating progress (fill below)
+
     await connection.commit();
     
     return {
