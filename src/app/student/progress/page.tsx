@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { fetchAuthSession, fetchUserAttributes } from "@aws-amplify/auth";
-import { Menu, X, CheckCircle, XCircle } from "lucide-react";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
 
@@ -30,12 +29,23 @@ const categoryLabels: Record<string, string> = {
     "IQP": "Interactive Qualifying Project"
 };
 
+interface ProgressEntry {
+    category: string;
+    completed_courses_count: number;
+    required_courses: number;
+  }
+
+  interface DegreeProgress {
+    progress: ProgressEntry[];
+  }
+  
+
 const ProgressPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
+    // const [sidebarOpen, setSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [degreeProgress, setDegreeProgress] = useState<any>(null);
+    const [degreeProgress, setDegreeProgress] = useState<DegreeProgress | null>(null);
     const router = useRouter();
 
     const fetchStudentProgress = async (wpiID: string) => {
@@ -125,9 +135,9 @@ const ProgressPage = () => {
                 {/* Main Content */}
                 <div className="flex flex-col flex-grow">
                     <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6">
-                        <button onClick={() => setSidebarOpen(true)} className="text-white hover:text-gray-300">
+                        {/* <button onClick={() => setSidebarOpen(true)} className="text-white hover:text-gray-300">
                             <Menu size={30} />
-                        </button>
+                        </button> */}
                         <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
                     </header>
 
@@ -169,13 +179,13 @@ const ProgressPage = () => {
 
                         {degreeProgress ? (
                             <div className="w-full max-w-8xl grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {degreeProgress.progress.map((entry: any, index: number) => {
-                                    const progressPercentage = Math.min(
+                                {degreeProgress.progress.map((entry: ProgressEntry, index: number) => {
+                                    const progressPercentage: number = Math.min(
                                         (entry.completed_courses_count / entry.required_courses) * 100,
                                         100
                                     );
 
-                                    let progressColor = "bg-red-400"; // Default red for not started
+                                    let progressColor: string = "bg-red-400"; // Default red for not started
                                     if (progressPercentage === 100) progressColor = "bg-green-500"; // Completed
                                     else if (progressPercentage > 0) progressColor = "bg-orange-500"; // In Progress
 
