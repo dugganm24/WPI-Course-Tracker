@@ -45,11 +45,12 @@ exports.handler = async (event) => {
       [wpiID]
     );
 
-    // Track used courses to prevent double counting
-    const usedCourses = new Set();
-    const freeElectiveCourses = new Set(completedCourses.map(c => c.course_id)); // Initialize properly
+    // Calculate total credits completed
+    const totalCreditsCompleted = completedCourses.reduce((sum, course) => sum + course.credits, 0);
 
-    // Get degree requirements
+    const usedCourses = new Set();
+    const freeElectiveCourses = new Set(completedCourses.map(c => c.course_id));
+
     const [degreeRequirements] = await connection.execute(
       `SELECT requirement_type, credits_required, min_courses, course_label 
        FROM Degree_Requirements 
@@ -57,11 +58,10 @@ exports.handler = async (event) => {
       [degree_program]
     );
 
-    // Sort requirements by priority order
     const priorityOrder = {
-      "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "HUA": 5, "PE": 6, 
-      "SS": 7, "MA": 8, "PH": 9, "CB": 10, "MBS": 11, "CS": 12, 
-      "AED": 13, "FE": 14  // Free Elective (FE) last
+      "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "HUA": 5, "PE": 6,
+      "SS": 7, "MA": 8, "PH": 9, "CB": 10, "MBS": 11, "CS": 12,
+      "AED": 13, "FE": 14, "MQP": 15, "IQP": 16
     };
 
     degreeRequirements.sort((a, b) => (priorityOrder[a.requirement_type] || 99) - (priorityOrder[b.requirement_type] || 99));
@@ -69,38 +69,26 @@ exports.handler = async (event) => {
     let progress = [];
 
     for (const requirement of degreeRequirements) {
-      // Split and trim course labels for proper comparison
       let requiredCourses = requirement.course_label
         ? requirement.course_label.split(",").map(c => c.trim())
         : [];
 
-      console.log("Checking requirement:", requirement.requirement_type, "Courses:", requiredCourses);
-
-      // Filter out courses already used in higher-priority categories
-      let availableCourses = completedCourses.filter(course => 
+      let availableCourses = completedCourses.filter(course =>
         requiredCourses.includes(course.course_id) && !usedCourses.has(course.course_id)
       );
 
-      // Track completed credits and courses
-      let completedCredits = availableCourses.reduce((sum, course) => {
-        console.log(`Adding credits for ${course.course_id}: ${course.credits}`);
-        return sum + course.credits;
-      }, 0);
-
+      let completedCredits = availableCourses.reduce((sum, course) => sum + course.credits, 0);
       let completedCoursesCount = availableCourses.length;
 
       let meetsCreditReq = requirement.credits_required ? completedCredits >= requirement.credits_required : true;
       let meetsCourseReq = requirement.min_courses ? completedCoursesCount >= requirement.min_courses : true;
 
-      // Mark used courses
       availableCourses.forEach(course => {
         usedCourses.add(course.course_id);
-        freeElectiveCourses.delete(course.course_id); // Remove from FE since it's used
+        freeElectiveCourses.delete(course.course_id);
       });
 
       let remainingCourses = requiredCourses.filter(c => !usedCourses.has(c));
-
-      console.log("Remaining Courses:", remainingCourses);
 
       progress.push({
         category: requirement.requirement_type,
@@ -112,7 +100,7 @@ exports.handler = async (event) => {
       });
     }
 
-    // **Handle Free Electives (FE)**: Add all unused courses here
+    // Handle Free Electives (FE)
     let feCredits = 0;
     let feCoursesCount = 0;
     let feCourses = [];
@@ -127,7 +115,7 @@ exports.handler = async (event) => {
 
     if (feCoursesCount > 0) {
       progress.push({
-        category: "FE", // Free Elective
+        category: "FE",
         required_credits: "N/A",
         completed_credits: feCredits,
         required_courses: "N/A",
@@ -142,6 +130,7 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         student_id: wpiID,
         degree_program,
+        total_credits_completed: totalCreditsCompleted,
         progress
       }),
     };
