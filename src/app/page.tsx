@@ -13,28 +13,10 @@ import {
 } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { Amplify } from 'aws-amplify';
-
-// Check if the files exist
-// import fs from "fs";
-// console.log(fs.existsSync("../amplifyconfiguration.json")); // Should print true
-// console.log(fs.existsSync("../aws-exports.js")); // Should print true
-
-
 import outputs from "../aws-exports.js";
 import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-amplify/auth";
 
-// import { jwtDecode, JwtPayload } from "jwt-decode";
-
 Amplify.configure(outputs);
-
-// function getUsernameFromToken(idToken: string) {
-//   if (idToken) {
-//       const decoded = jwtDecode<JwtPayload & { "cognito:username": string }>(idToken);
-//       return decoded["cognito:username"];
-//   }
-//   return null;
-// }
-
 
 const AuthenticatedUserActions = () => {
   ;
@@ -59,25 +41,25 @@ const AuthenticatedUserActions = () => {
     wpiID: string | number;
   }
 
-  const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
-    try {
-      const response = await fetch(
-        "https://4o8m1mc4cg.execute-api.us-east-2.amazonaws.com/dev/openStudentAccount",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        }
-      );
+  // const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
+  //   try {
+  //     const response = await fetch(
+  //       "https://4o8m1mc4cg.execute-api.us-east-2.amazonaws.com/dev/openStudentAccount",
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(userData),
+  //       }
+  //     );
 
-      const data = await response.json();
-      console.log("Lambda Response:", data);
-    } catch (error) {
-      console.error("Error sending data to Lambda:", error);
-    }
-  }, []);
+  //     const data = await response.json();
+  //     console.log("Lambda Response:", data);
+  //   } catch (error) {
+  //     console.error("Error sending data to Lambda:", error);
+  //   }
+  // }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -102,7 +84,7 @@ const AuthenticatedUserActions = () => {
         };
 
         // Call Lambda function with user data
-        await sendUserDataToBackend(userData);
+        // await sendUserDataToBackend(userData);
 
         currentSession();
       } catch (error) {
@@ -110,7 +92,7 @@ const AuthenticatedUserActions = () => {
       }
     };
     fetchUserData();
-  }, [sendUserDataToBackend]);
+  }, );
 
   if (!user) return null;
 

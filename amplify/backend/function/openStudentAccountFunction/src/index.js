@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const mysql = require('mysql2/promise');
 
-AWS.config.update({ region: 'us-east-1' });
+AWS.config.update({ region: 'us-east-2' });
 
 // MySQL Database Configuration
 const MYSQL_CONFIG = {
@@ -15,17 +15,21 @@ const MYSQL_CONFIG = {
 const pool = mysql.createPool(MYSQL_CONFIG);
 
 exports.handler = async (event) => {
-  const { username, email, accountType, firstName, lastName, wpiID } = event;
+  console.log("PostConfirmation trigger received event:", JSON.stringify(event, null, 2));
 
-  console.log("Received event:", JSON.stringify(event, null, 2));
+  const userAttributes = event.request.userAttributes;
+
+  const username = event.userName;
+  const email = userAttributes.email;
+  const accountType = userAttributes["custom:account_type"];
+  const firstName = userAttributes.given_name;
+  const lastName = userAttributes.family_name;
+  const wpiID = userAttributes["custom:wpiID"];
 
   // Validate input parameters
   if (!username || !email || !accountType || !firstName || !lastName || !wpiID) {
     console.error("Missing parameters:", { username, email, accountType, firstName, lastName, wpiID });
-    return {
-      statusCode: 400,
-      body: JSON.stringify({ message: "Missing required fields" }),
-    };
+    return event; // Still return event even if you don't proceed
   }
 
   let connection;
@@ -45,10 +49,7 @@ exports.handler = async (event) => {
 
     if (existingUser.length > 0) {
       console.log("User already exists with wpiID:", wpiID);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ message: "User already exists", wpiID }),
-      };
+      return event;
     }
 
     // Insert user into the correct table based on accountType
@@ -57,8 +58,8 @@ exports.handler = async (event) => {
 
     if (accountType.toLowerCase() === "student") {
       insertQuery = `
-        INSERT INTO Student (student_id, username, email, first_name, last_name) 
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Student (student_id, username, email, first_name, last_name, degree_program) 
+        VALUES (?, ?, ?, ?, ?, 'ECE')
       `;
       values = [wpiID, username, email, firstName, lastName];
     } else if (accountType.toLowerCase() === "advisor") {
@@ -69,10 +70,7 @@ exports.handler = async (event) => {
       values = [wpiID, username, email, firstName, lastName];
     } else {
       console.error("Invalid account type:", accountType);
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ message: "Invalid account type. Must be 'student' or 'advisor'." }),
-      };
+      return event;
     }
 
     // Execute the insert query
@@ -80,20 +78,14 @@ exports.handler = async (event) => {
 
     console.log("User successfully added:", username);
 
-    return {
-      statusCode: 201,
-      body: JSON.stringify({ message: "User successfully added", username, accountType, wpiID }),
-    };
-
   } catch (error) {
     console.error("Database error:", error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ message: "Internal server error", error: error.message }),
-    };
+    // Still return event so Cognito doesn't fail the flow
   } finally {
     if (connection) {
       await connection.release(); // Release the connection back to the pool
     }
   }
+
+  return event; // Required for Cognito triggers
 };
