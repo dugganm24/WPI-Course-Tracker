@@ -33,12 +33,13 @@ interface ProgressEntry {
     category: string;
     completed_courses_count: number;
     required_courses: number;
-  }
+}
 
-  interface DegreeProgress {
+interface DegreeProgress {
     progress: ProgressEntry[];
-  }
-  
+    total_credits_completed: number;
+}
+
 
 const ProgressPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
@@ -178,40 +179,47 @@ const ProgressPage = () => {
                         <h1 className="text-2xl text-black font-bold mb-4">Your Degree Progress</h1>
 
                         {degreeProgress ? (
-                            <div className="w-full max-w-8xl grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {degreeProgress.progress.map((entry: ProgressEntry, index: number) => {
-                                    const progressPercentage: number = Math.min(
-                                        (entry.completed_courses_count / entry.required_courses) * 100,
-                                        100
-                                    );
+                            <>
+                                <h2 className="text-xl text-black font-semibold mb-4">
+                                    Total Credits Completed:{" "}
+                                    <span className="text-red-700">{degreeProgress.total_credits_completed}</span>
+                                </h2>
 
-                                    let progressColor: string = "bg-red-400"; // Default red for not started
-                                    if (progressPercentage === 100) progressColor = "bg-green-500"; // Completed
-                                    else if (progressPercentage > 0) progressColor = "bg-orange-500"; // In Progress
+                                <div className="w-full max-w-8xl grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {degreeProgress.progress.map((entry: ProgressEntry, index: number) => {
+                                        const progressPercentage: number = Math.min(
+                                            (entry.completed_courses_count / entry.required_courses) * 100,
+                                            100
+                                        );
 
-                                    return (
-                                        <div key={index} className="border-red-500 shadow-lg rounded-lg p-6">
-                                            <div className="flex justify-between items-center mb-3">
-                                                <h2 className="text-lg font-bold text-red-800">
-                                                    {categoryLabels[entry.category] || entry.category}
-                                                </h2>
-                                                <span className="text-red-700 font-semibold text-sm">
-                                                    {entry.completed_courses_count} / {entry.required_courses} Courses Completed
-                                                </span>
+                                        let progressColor: string = "bg-red-400";
+                                        if (progressPercentage === 100) progressColor = "bg-green-500";
+                                        else if (progressPercentage > 0) progressColor = "bg-orange-500";
+
+                                        return (
+                                            <div key={index} className="border-red-500 shadow-lg rounded-lg p-6">
+                                                <div className="flex justify-between items-center mb-3">
+                                                    <h2 className="text-lg font-bold text-red-800">
+                                                        {categoryLabels[entry.category] || entry.category}
+                                                    </h2>
+                                                    <span className="text-red-700 font-semibold text-sm">
+                                                        {entry.completed_courses_count} / {entry.required_courses} Courses Completed
+                                                    </span>
+                                                </div>
+                                                <div className="w-full bg-gray-300 h-6 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full ${progressColor}`}
+                                                        style={{ width: `${progressPercentage}%` }}
+                                                    ></div>
+                                                </div>
+                                                <p className="text-sm text-red-700 mt-2 font-semibold">
+                                                    {progressPercentage.toFixed(1)}% completed
+                                                </p>
                                             </div>
-                                            <div className="w-full bg-gray-300 h-6 rounded-full overflow-hidden">
-                                                <div
-                                                    className={`h-full ${progressColor}`}
-                                                    style={{ width: `${progressPercentage}%` }}
-                                                ></div>
-                                            </div>
-                                            <p className="text-sm text-red-700 mt-2 font-semibold">
-                                                {progressPercentage.toFixed(1)}% completed
-                                            </p>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </>
                         ) : (
                             <p className="text-center text-gray-700">No progress data available.</p>
                         )}
