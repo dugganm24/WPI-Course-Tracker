@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Authenticator,
@@ -32,14 +32,14 @@ const AuthenticatedUserActions = () => {
     }
   }
 
-  interface UserData {
-    username: string;
-    email: string | null;
-    firstName: string | null;
-    lastName: string | null;
-    accountType: string | null;
-    wpiID: string | number;
-  }
+  // interface UserData {
+  //   username: string;
+  //   email: string | null;
+  //   firstName: string | null;
+  //   lastName: string | null;
+  //   accountType: string | null;
+  //   wpiID: string | number;
+  // }
 
   // const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
   //   try {
@@ -74,14 +74,14 @@ const AuthenticatedUserActions = () => {
         console.log("Last Name:", userAttributes.family_name);
         console.log("User Attributes:", userAttributes);
 
-        const userData = {
+        console.log("User data:", {
           username: currentUser.username,
           email: userAttributes.email ?? null,
           firstName: userAttributes.given_name ?? null,
           lastName: userAttributes.family_name ?? null,
           accountType: accountType ?? null,
           wpiID: wpiID ?? 0,
-        };
+        });
 
         // Call Lambda function with user data
         // await sendUserDataToBackend(userData);
