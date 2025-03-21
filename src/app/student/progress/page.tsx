@@ -181,7 +181,7 @@ const ProgressPage = () => {
                         {degreeProgress ? (
                             <>
                                 <h2 className="text-xl text-black font-semibold mb-4">
-                                    Total Credits Completed:{" "}
+                                    Total Credits Earned:{" "}
                                     <span className="text-red-700">{degreeProgress.total_credits_completed}</span>
                                 </h2>
 
