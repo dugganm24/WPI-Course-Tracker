@@ -68,27 +68,50 @@ exports.handler = async (event) => {
 
     let progress = [];
 
+    const assignedCounts = {};   // Tracks how many courses were assigned to each requirement_type
+    const assignedCredits = {};
+
     for (const requirement of degreeRequirements) {
-      let requiredCourses = requirement.course_label
+      const requiredCourses = requirement.course_label
         ? requirement.course_label.split(",").map(c => c.trim())
         : [];
 
-      let availableCourses = completedCourses.filter(course =>
-        requiredCourses.includes(course.course_id) && !usedCourses.has(course.course_id)
-      );
+      let matchedCourses = [];
 
-      let completedCredits = availableCourses.reduce((sum, course) => sum + course.credits, 0);
-      let completedCoursesCount = availableCourses.length;
+      for (const course of completedCourses) {
+        if (
+          requiredCourses.includes(course.course_id) &&
+          !usedCourses.has(course.course_id)
+        ) {
+          const count = assignedCounts[requirement.requirement_type] || 0;
+          const creditSum = assignedCredits[requirement.requirement_type] || 0;
+          const meetsMinCourses = requirement.min_courses
+            ? count >= requirement.min_courses
+            : false;
+          const meetsCreditReq = requirement.credits_required
+            ? creditSum >= requirement.credits_required
+            : false;
 
-      let meetsCreditReq = requirement.credits_required ? completedCredits >= requirement.credits_required : true;
-      let meetsCourseReq = requirement.min_courses ? completedCoursesCount >= requirement.min_courses : true;
+          if (!meetsMinCourses || !meetsCreditReq) {
+            matchedCourses.push(course);
+            usedCourses.add(course.course_id);
+            freeElectiveCourses.delete(course.course_id);
 
-      availableCourses.forEach(course => {
-        usedCourses.add(course.course_id);
-        freeElectiveCourses.delete(course.course_id);
-      });
+            assignedCounts[requirement.requirement_type] = count + 1;
+            assignedCredits[requirement.requirement_type] = creditSum + course.credits;
+          }
+        }
+      }
 
-      let remainingCourses = requiredCourses.filter(c => !usedCourses.has(c));
+      const completedCredits = assignedCredits[requirement.requirement_type] || 0;
+      const completedCoursesCount = assignedCounts[requirement.requirement_type] || 0;
+
+      const meetsCreditReq = requirement.credits_required
+        ? completedCredits >= requirement.credits_required
+        : true;
+      const meetsCourseReq = requirement.min_courses
+        ? completedCoursesCount >= requirement.min_courses
+        : true;
 
       progress.push({
         category: requirement.requirement_type,

@@ -277,7 +277,7 @@ const formFields = {
 export default function App() {
   return (
     <Authenticator.Provider>
-      <div className="min-h-screen flex flex-col bg-red-100">
+      <div className="min-h-screen flex flex-col bg-white">
         <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6 mb-4">
           <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
           <AuthenticatedUserActions />
