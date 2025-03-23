@@ -132,7 +132,7 @@ const ProgressPage = () => {
 
     return (
         <>
-            <div className="min-h-screen flex bg-gray-700">
+            <div className="min-h-screen flex bg-gray-600">
                 {/* Main Content */}
                 <div className="flex flex-col flex-grow">
                     <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6">
