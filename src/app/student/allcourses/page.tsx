@@ -116,12 +116,22 @@ const AllCoursesPage = () => {
             return matchesSearchTerm && matchesAcademicUnits && matchesCredits && matchesTerm;
         });
 
-        const groupedFilteredCourses = filteredCourses.reduce((acc, course) => {
-            const units = course.academic_units || "Unknown";
-            if (!acc[units]) acc[units] = [];
-            acc[units].push(course);
-            return acc;
-        }, {} as GroupedCourses);
+        const groupedFilteredCourses = (() => {
+            const grouped = filteredCourses.reduce((acc, course) => {
+                const units = course.academic_units || "Unknown";
+                if (!acc[units]) acc[units] = [];
+                acc[units].push(course);
+                return acc;
+            }, {} as GroupedCourses);
+    
+            Object.keys(grouped).forEach(unit => {
+                grouped[unit].sort((a, b) => 
+                    a.course_title.localeCompare(b.course_title)
+                );
+            });
+    
+            return grouped;
+        })();
 
         useEffect(() => {
             if (!loading) {
