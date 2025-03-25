@@ -45,7 +45,10 @@ const AllCoursesPage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState<Course[]>([]);
-    const [groupedCourses, setGroupedCourses] = useState<GroupedCourses>({});
+    const [searchTerm, setSearchTerm] = useState("");
+    const [filterTerm, setFilterTerm] = useState("");
+    const [filterCredits, setFilterCredits] = useState("");
+    const [filterAcademicUnits, setFilterAcademicUnits] = useState("");
     const router = useRouter();
 
     useEffect(() => {
@@ -94,7 +97,32 @@ const AllCoursesPage = () => {
         
             fetchCourses();
           }, []);
- 
+
+        const filteredCourses = courses.filter((course) => {
+            const matchesSearchTerm =
+            course.course_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            course.term.toLowerCase().includes(searchTerm.toLowerCase());    
+            
+            const matchesAcademicUnits = filterAcademicUnits
+            ? course.academic_units === filterAcademicUnits
+            : true;
+
+            const matchesCredits = filterCredits
+            ? course.credits === parseInt(filterCredits)
+            : true;
+
+            const matchesTerm = filterTerm ? course.term === filterTerm : true;
+
+            return matchesSearchTerm && matchesAcademicUnits && matchesCredits && matchesTerm;
+        });
+
+        const groupedFilteredCourses = filteredCourses.reduce((acc, course) => {
+            const units = course.academic_units || "Unknown";
+            if (!acc[units]) acc[units] = [];
+            acc[units].push(course);
+            return acc;
+        }, {} as GroupedCourses);
+
         useEffect(() => {
             if (!loading) {
                 if (isAuthenticated === false) {
@@ -105,25 +133,6 @@ const AllCoursesPage = () => {
                 }
             }
         }, [loading, isAuthenticated, accountType, router]); 
-        
-        useEffect(() => {
-            if (courses && courses.length > 0) {
-                const groupedCourses = courses.reduce((acc, course) => {
-                    const units = course.academic_units || "Unknown";
-                    if (!acc[units]) acc[units] = [];
-                    acc[units].push(course);
-                    return acc;
-                }, {} as GroupedCourses);
-
-                Object.keys(groupedCourses).forEach((unit) => {
-                    groupedCourses[unit].sort((a, b) => a.course_title.localeCompare(b.course_title));
-                });
-                
-                console.log("Grouped courses: ", groupedCourses);
-                setGroupedCourses(groupedCourses);
-            }
-        }, [courses]);
-        
 
         if (loading) {
             return <div className="flex justify-center items-center h-screen text-lg font-bold">Loading...</div>;
@@ -200,16 +209,71 @@ const AllCoursesPage = () => {
                     <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto"> 
                         <h1 className="text-2xl text-black font-bold mb-4">Available WPI Courses</h1>
 
-                        {/* Displaying grouped courses */}
-                        <div className="w-full">
-                            {Object.keys(groupedCourses).length === 0 ? (
-                                <p>No courses available.</p>  
+                        {/* Search and Filters Section */}
+                        <div className="flex flex-col w-full bg-gray-100 p-4 mb-6 text-gray-700">
+                            <input
+                                type="text"
+                                placeholder="Search by course title or term"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="border p-2 mb-4 rounded placeholder-gray-700"
+                            />
+
+                            <div className="flex space-x-4 mb-4">
+                                <select
+                                    value={filterAcademicUnits}
+                                    onChange={(e) => setFilterAcademicUnits(e.target.value)}
+                                    className="border p-2 rounded w-1/3">
+                                    <option value="">Filter by Academic Units</option>
+                                    {Array.from(new Set(courses.map((course) => course.academic_units)))
+                                        .sort()
+                                        .map((unit) => (
+                                            <option key={unit} value={unit}>
+                                                {unit}
+                                            </option>
+                                        ))}
+                                </select>
+
+                                <select
+                                    value={filterCredits}
+                                    onChange={(e) => setFilterCredits(e.target.value)}
+                                    className="border p-2 rounded w-1/3">
+                                    <option value="">Filter by Credits</option>
+                                    {Array.from(new Set(courses.map((course) => course.credits)))
+                                        .sort()
+                                        .map((credits) => (
+                                            <option key={credits} value={credits}>
+                                                {credits}
+                                            </option>
+                                        ))}
+                                </select>
+
+                                <select
+                                    value={filterTerm}
+                                    onChange={(e) => setFilterTerm(e.target.value)}
+                                    className="border p-2 rounded w-1/3">
+                                    <option value="">Filter by Term</option>
+                                    {Array.from(new Set(courses.map((course) => course.term)))
+                                        .sort()
+                                        .map((term) => (
+                                            <option key={term} value={term}>
+                                                {term}
+                                            </option>
+                                        ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Displaying filtered and grouped courses */}
+                        <div className="w-full text-black">
+                            {filteredCourses.length === 0 ? (
+                                <p>No courses match your search or filter criteria.</p>  
                             ) : (
-                                Object.keys(groupedCourses).map((unit) => (
+                                Object.keys(groupedFilteredCourses).map((unit) => (
                                     <div key={unit} className="mb-6">
                                         <h2 className="text-xl font-bold text-red-800 mb-4">{unit}</h2>
                                         <ul>
-                                            {groupedCourses[unit].map((course: Course) => (
+                                            {groupedFilteredCourses[unit].map((course: Course) => (
                                                 <li key={course.id} className="bg-gray-200 p-4 mb-2 rounded-md shadow-sm">
                                                     <h3 className="font-semibold text-black">{course.course_title}</h3>
                                                     <p className="text-sm text-black">Term: {course.term}</p>
