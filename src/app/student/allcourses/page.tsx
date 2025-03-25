@@ -45,7 +45,6 @@ const AllCoursesPage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState<Course[]>([]);
-    const [groupedCourses, setGroupedCourses] = useState<GroupedCourses>({});
     const [searchTerm, setSearchTerm] = useState("");
     const [filterTerm, setFilterTerm] = useState("");
     const [filterCredits, setFilterCredits] = useState("");
@@ -134,25 +133,6 @@ const AllCoursesPage = () => {
                 }
             }
         }, [loading, isAuthenticated, accountType, router]); 
-        
-        useEffect(() => {
-            if (courses && courses.length > 0) {
-                const groupedCourses = courses.reduce((acc, course) => {
-                    const units = course.academic_units || "Unknown";
-                    if (!acc[units]) acc[units] = [];
-                    acc[units].push(course);
-                    return acc;
-                }, {} as GroupedCourses);
-
-                Object.keys(groupedCourses).forEach((unit) => {
-                    groupedCourses[unit].sort((a, b) => a.course_title.localeCompare(b.course_title));
-                });
-                
-                console.log("Grouped courses: ", groupedCourses);
-                setGroupedCourses(groupedCourses);
-            }
-        }, [courses]);
-        
 
         if (loading) {
             return <div className="flex justify-center items-center h-screen text-lg font-bold">Loading...</div>;
