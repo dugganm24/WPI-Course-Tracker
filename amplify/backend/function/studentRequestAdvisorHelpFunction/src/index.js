@@ -25,7 +25,7 @@ exports.handler = async (event) => {
     }
 
     const [rows] = await connection.execute(
-      `SELECT A.email AS advisor_email
+      `SELECT S.email AS student_email, A.email AS advisor_email
       FROM Student S
       JOIN Advisor A ON S.advisor_id = A.advisor_id
       WHERE S.student_id = ?`,
@@ -41,7 +41,10 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ advisorEmail: rows[0].advisor_email }),
+      body: JSON.stringify({ 
+        studentEmail: rows[0].student_email,
+        advisorEmail: rows[0].advisor_email 
+      }),
     };
   } catch (error) {
     console.error("Error fetching advisor email: ", error);
