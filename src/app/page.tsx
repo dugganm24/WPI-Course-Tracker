@@ -19,7 +19,7 @@ import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-ampli
 Amplify.configure(outputs);
 
 const AuthenticatedUserActions = () => {
-  ;
+  
   const { user, signOut} = useAuthenticator();
 
   async function currentSession() {
@@ -31,35 +31,6 @@ const AuthenticatedUserActions = () => {
       console.log(err);
     }
   }
-
-  // interface UserData {
-  //   username: string;
-  //   email: string | null;
-  //   firstName: string | null;
-  //   lastName: string | null;
-  //   accountType: string | null;
-  //   wpiID: string | number;
-  // }
-
-  // const sendUserDataToBackend = useCallback(async (userData: UserData): Promise<void> => {
-  //   try {
-  //     const response = await fetch(
-  //       "https://4o8m1mc4cg.execute-api.us-east-2.amazonaws.com/dev/openStudentAccount",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(userData),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-  //     console.log("Lambda Response:", data);
-  //   } catch (error) {
-  //     console.error("Error sending data to Lambda:", error);
-  //   }
-  // }, []);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -82,9 +53,6 @@ const AuthenticatedUserActions = () => {
           accountType: accountType ?? null,
           wpiID: wpiID ?? 0,
         });
-
-        // Call Lambda function with user data
-        // await sendUserDataToBackend(userData);
 
         currentSession();
       } catch (error) {
