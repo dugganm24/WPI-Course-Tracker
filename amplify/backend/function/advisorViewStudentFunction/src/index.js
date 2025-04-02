@@ -25,7 +25,7 @@ exports.handler = async (event) => {
   const connection = await pool.getConnection();
   try {
     const [students] = await connection.execute(`
-      SELECT s.first_name, s.last_name, s.graduation_year, s.degree_program 
+      SELECT s.first_name, s.last_name, s.graduation_year, s.degree_program, s.student_id 
       FROM Student s
       WHERE s.advisor_id = ?
     `, [advisor_id]);
