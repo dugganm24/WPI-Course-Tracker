@@ -15,6 +15,7 @@ interface Student {
     last_name: string;
     graduation_year: string | null;
     degree_program: string | null;
+    student_id: number;
 }
 
 const ViewStudentsPage = () => {
@@ -142,10 +143,20 @@ const ViewStudentsPage = () => {
                         ) : (
                             <div className="space-y-4">
                                 {students.map((student, index) => (
+                                    console.log("Student:", student.student_id),
                                     <div key={index} className="bg-gray-200 p-4 mb-4 rounded-md shadow-sm">
                                         <h3 className="font-semibold text-black">{`${student.first_name} ${student.last_name}`}</h3>
                                         <p className="text-sm text-black">Graduation Year: {student.graduation_year !== null ? student.graduation_year : 'null'}</p>
                                         <p className="text-sm text-black">Degree Program: {student.degree_program !== null ? student.degree_program : 'null'}</p>
+
+                                        {/* View Progress Button */}
+                                        <Button
+                                            onClick={() => router.push(`/advisor/student/${student.student_id}`)}
+                                            variation="primary"
+                                            className="bg-red-500 hover:bg-red-800 text-white font-bold py-4 px-0 mt-6 rounded nav-button"
+                                            >
+                                            View Progress
+                                        </Button>
                                     </div>
                                 ))}
                             </div>
