@@ -4,35 +4,25 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { fetchAuthSession, fetchUserAttributes} from "aws-amplify/auth";
-import { Menu, X } from "lucide-react";
+import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
 
 Amplify.configure(outputs);
 
-const wpiMajors = [
-    "Electrical and Computer Engineering (ECE)",
-    "Computer Science (CS)",
-    "Mechanical Engineering (ME)",
-    "Biomedical Engineering (BME)",
-    "Robotics Engineering (RE)",
-    "Aerospace Engineering (AE)",
-    "Civil Engineering (CE)",
-    "Chemical Engineering (CHE)",
-    "Environmental Engineering (ENE)",
-    "Industrial Engineering (IE)",
-    "Materials Science and Engineering (MSE)",
-    "Fire Protection Engineering (FPE)",
-    "Architectural Engineering (AE)",
-];
+interface Student {
+    first_name: string;
+    last_name: string;
+    graduation_year: string | null;
+    degree_program: string | null;
+}
 
-const AllCoursesPage = () => {
-    // const [user, setUser] = useState<any>(null);
+const ViewStudentsPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [students, setStudents] = useState<Student[]>([]);
+    const [advisorId, setAdvisorId] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -45,13 +35,15 @@ const AllCoursesPage = () => {
                     return;
                 }
 
-                // const currentUser = await getCurrentUser();
-                // setUser(currentUser);
                 setIsAuthenticated(true);
 
                 const attributes = await fetchUserAttributes();
                 const accountTypeValue = attributes["custom:account_type"] || null;
                 setAccountType(accountTypeValue);
+
+                const advisorIdValue = attributes["custom:wpiID"] || null;
+                console.log("Advisor ID:", advisorIdValue);
+                setAdvisorId(advisorIdValue);
             } catch (error) {
                 console.log("Error fetching session or attributes:", error);
                 setIsAuthenticated(false);
@@ -64,7 +56,37 @@ const AllCoursesPage = () => {
         checkAuthStatus();
     }, []);
 
-    // Redirect logic (ensuring it only runs after account_type is known)
+    useEffect(() => {
+        const fetchStudents = async () => {
+            try {
+                if (advisorId) {
+                    const response = await fetch('https://77et8rpf6i.execute-api.us-east-2.amazonaws.com/dev/advisor/viewStudent',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ advisor_id: advisorId }),
+                        }
+                    );
+                    const data = await response.json();
+                    console.log("Response data:", data);
+
+                    const body = JSON.parse(data.body);
+                    console.log("Parsed body:", body);
+
+                    setStudents(body.students);
+                }
+            } catch (error) {
+                console.error("Error fetching students:", error);
+            }
+        };
+
+        if (advisorId) {
+            fetchStudents();
+        }
+    }, [advisorId]);
+
     useEffect(() => {
         if (!loading) {
             if (isAuthenticated === false) {
@@ -84,77 +106,55 @@ const AllCoursesPage = () => {
         return null;
     }
 
-    
     return (
         <>
-            <div className="min-h-screen flex bg-red-100">
-                {/* Sidebar */}
-                <div className={`fixed top-0 left-0 h-full bg-gray-700 w-64 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-64"} transition-transform duration-300 ease-in-out shadow-lg z-50 overflow-y-auto`}>
-                    <div className="flex justify-between items-center p-4 bg-red-600 text-white">
-                        <span className="text-xl font-bold">Courses</span>
-                        <button onClick={() => setSidebarOpen(false)} className="text-white hover:text-gray-300">
-                            <X size={24} />
-                        </button>
-                    </div>
-                    <nav className="flex flex-col p-4 space-y-2">
-                        {wpiMajors.map((course) => (
-                            <span key={course} className="block bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition">
-                                {course}
-                            </span>
-                        ))}
+            <div className="min-h-screen flex flex-col">
+                <header className="bg-red-600 w-full py-4 flex justify-center items-center px-6">
+                    <div className="text-white text-3xl font-bold">WPI Advisor Portal</div>
+                </header>
+
+                <div className="flex flex-col bg-red-00">
+                    <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+                        <Button
+                            onClick={() => router.push("/")}
+                            variation="primary"
+                            className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
+                        >
+                            Home
+                        </Button>
+                        <Button
+                            onClick={() => accountType && router.push("/advisor/students")}
+                            disabled={!accountType}
+                            variation="primary"
+                            className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+                        >
+                            View Students
+                        </Button>
                     </nav>
                 </div>
 
-                {/* Main Content */}
-                <div className="flex flex-col flex-grow">
-                    <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6">
-                        {/* Sidebar Toggle Button */}
-                        <button onClick={() => setSidebarOpen(true)} className="text-white hover:text-gray-300">
-                            <Menu size={30} />
-                        </button>
-                        <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
-                    </header>
+                <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto bg-white">
+                    <h1 className="text-2xl text-black font-bold mb-4">Your Students</h1>
 
-                    <div className="flex flex-col bg-red-00 min-h-screen">
-                        <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
-                            <Button
-                                onClick={() => router.push("/")}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button">
-                                Home
-                            </Button>
-                            <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/courses" : "/student/courses")}
-                                disabled={!accountType}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                My Courses
-                            </Button>
-                            <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/progress" : "/student/progress")}
-                                disabled={!accountType}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                My Progress
-                            </Button>
-                            <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/allcourses" : "/student/allcourses")}
-                                disabled={!accountType}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                All Courses
-                            </Button>
-                        </nav>
+                    <div className="w-full text-black">
+                        {students.length === 0 ? (
+                            <p>No students found that you advise.</p>
+                        ) : (
+                            <div className="space-y-4">
+                                {students.map((student, index) => (
+                                    <div key={index} className="bg-gray-200 p-4 mb-4 rounded-md shadow-sm">
+                                        <h3 className="font-semibold text-black">{`${student.first_name} ${student.last_name}`}</h3>
+                                        <p className="text-sm text-black">Graduation Year: {student.graduation_year !== null ? student.graduation_year : 'null'}</p>
+                                        <p className="text-sm text-black">Degree Program: {student.degree_program !== null ? student.degree_program : 'null'}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
-
-                    {/* Main Content */}
-                    <main className="flex-grow p-6 flex flex-col items-center">
-                        <h1 className="text-2xl text-black font-bold mb-4">Welcome to All WPI Courses</h1>
-                    </main>
-                </div>
+                </main>
             </div>
         </>
     );
 };
 
-export default AllCoursesPage;
+export default ViewStudentsPage;
