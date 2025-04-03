@@ -304,7 +304,7 @@ const formFields = {
   }
 };
 
-const PostLoginIntro = () => {
+const StudentPostLoginIntro = () => {
   const { user } = useAuthenticator();
 
   if (!user) return null;
@@ -325,6 +325,56 @@ const PostLoginIntro = () => {
   );
 };
 
+const AdvisorPostLoginIntro = () => {
+  const { user } = useAuthenticator();
+
+  if (!user) return null;
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-center text-4xl font-semibold mb-2 text-black my-2">Welcome to the WPI Course Tracker for Advisors!</h2>
+      <p className="text-center text-gray-700">
+        This app helps you view student progress, manage student course selections, and provide academic advising. Use the navigation above to effectively guide your students through their academic journey.
+      </p>
+      <p className="text-center text-gray-700 mb-4 my-4">
+        For support or inquiries, please contact the advising support team.
+      </p>
+
+      <p className="text-center text-gray-700 mb-4 my-4">
+        Please reach out to William Tyrrell at wftyrrell64@gmail.com or Michael Duggan at mpduggan97@gmail.com to report bugs, request features, or provide feedback. Thank you!
+      </p>
+    </div>
+  );
+};
+
+const ConditionalPostLoginIntro = () => {
+  const { user } = useAuthenticator();
+  const [accountType, setAccountType] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchAccountType = async () => {
+      try {
+        const userAttributes = await fetchUserAttributes();
+        const accountTypeValue = userAttributes["custom:account_type"];
+        setAccountType(accountTypeValue ?? null);
+      } catch (error) {
+        console.error("Error fetching account type:", error);
+      }
+    };
+
+    if (user) {
+      fetchAccountType();
+    }
+  }, [user]);
+
+  if (!user || !accountType) return null;
+
+  return (
+    <>
+      {accountType === "student" && <StudentPostLoginIntro />}
+      {accountType === "advisor" && <AdvisorPostLoginIntro />}
+    </>
+  );
+};
 
 export default function App() {
   return (
@@ -337,7 +387,7 @@ export default function App() {
         </header>
 
         <UserNavigation />
-        <PostLoginIntro />
+        <ConditionalPostLoginIntro />
         
 
         <div className="flex flex-col justify-center items-center flex-grow">
@@ -349,6 +399,3 @@ export default function App() {
     </Authenticator.Provider>
   );
 }
-
-
-
