@@ -111,7 +111,7 @@ const ViewStudentsPage = () => {
         <>
             <div className="min-h-screen flex flex-col">
                 <header className="bg-red-600 w-full py-4 flex justify-center items-center px-6">
-                    <div className="text-white text-3xl font-bold">WPI Advisor Portal</div>
+                    <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
                 </header>
 
                 <div className="flex flex-col bg-red-00">
@@ -153,9 +153,17 @@ const ViewStudentsPage = () => {
                                         <Button
                                             onClick={() => router.push(`/advisor/student/${student.student_id}`)}
                                             variation="primary"
-                                            className="bg-red-500 hover:bg-red-800 text-white font-bold py-4 px-0 mt-6 rounded nav-button"
+                                            className="bg-red-500 hover:bg-red-800 text-white font-bold py-4 px-2 mt-6 rounded nav-button"
                                             >
                                             View Progress
+                                        </Button>
+
+                                        <Button
+                                            onClick={() => router.push(`/advisor/studentEnrollments/${student.student_id}`)}
+                                            variation="primary"
+                                            className="bg-red-500 hover:bg-red-800 text-white font-bold py-4 px-2 mt-6 rounded nav-button"
+                                            >
+                                            View Enrollments
                                         </Button>
                                     </div>
                                 ))}
