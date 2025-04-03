@@ -391,7 +391,7 @@ const CoursesPage = () => {
 
             {/* Nav Bar */}
             <div className="flex flex-col bg-red-00">
-                        <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+                        <nav className="bg-gray-300 p-4 flex justify-center space-x-8 w-full">
                             <Button
                                 onClick={() => router.push("/")}
                                 variation="primary"
@@ -412,9 +412,9 @@ const CoursesPage = () => {
 
             {/* Enroll Header */}
             <div className="flex justify-between items-center mb-6 px-2">
-                <h1 className="text-3xl font-bold text-red-700">My Enrolled Courses</h1>
+                <h1 className="text-3xl font-bold text-red-700 py-2">My Enrolled Courses</h1>
                 <Button
-                    className="bg-red-600 hover:bg-red-800 text-white font-semibold"
+                    className="bg-red-600 hover:bg-red-800 text-white font-semibold nav-button"
                     onClick={handleEnrollClick}>
                     Update Courses
                 </Button>
