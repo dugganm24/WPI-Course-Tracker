@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { fetchAuthSession, fetchUserAttributes} from "aws-amplify/auth";
+import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth";
 import { Menu, X } from "lucide-react";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
@@ -52,105 +52,105 @@ const AllCoursesPage = () => {
     const router = useRouter();
 
     useEffect(() => {
-            const checkAuthStatus = async () => {
-                try {
-                    const session = await fetchAuthSession();
-                    if (!session) {
-                        setIsAuthenticated(false);
-                        setLoading(false);
-                        return;
-                    }
-                    setIsAuthenticated(true);
-    
-                    const attributes = await fetchUserAttributes();
-                    const accountTypeValue = attributes["custom:account_type"] || null;
-                    setAccountType(accountTypeValue);
-                } catch (error) {
-                    console.log("Error fetching session or attributes:", error);
+        const checkAuthStatus = async () => {
+            try {
+                const session = await fetchAuthSession();
+                if (!session) {
                     setIsAuthenticated(false);
-                    setAccountType(null);
-                } finally {
                     setLoading(false);
+                    return;
                 }
-            };
-    
-            checkAuthStatus();
-        }, []);
+                setIsAuthenticated(true);
 
-        useEffect(() => {
-            const fetchCourses = async () => {
-              try {
+                const attributes = await fetchUserAttributes();
+                const accountTypeValue = attributes["custom:account_type"] || null;
+                setAccountType(accountTypeValue);
+            } catch (error) {
+                console.log("Error fetching session or attributes:", error);
+                setIsAuthenticated(false);
+                setAccountType(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        checkAuthStatus();
+    }, []);
+
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
                 const response = await fetch("https://n1murh6cx9.execute-api.us-east-2.amazonaws.com/dev/student/viewCourses", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({}),
-                });                
+                });
                 const data = await response.json();
                 const body = JSON.parse(data.body);
 
                 console.log("Courses body: ", body.courses);
-                setCourses(body.courses); 
-              } catch (error) {
+                setCourses(body.courses);
+            } catch (error) {
                 console.error("Error fetching courses: ", error);
-              }
-            };
-        
-            fetchCourses();
-          }, []);
+            }
+        };
 
-        const filteredCourses = courses.filter((course) => {
-            const matchesSearchTerm =
+        fetchCourses();
+    }, []);
+
+    const filteredCourses = courses.filter((course) => {
+        const matchesSearchTerm =
             course.course_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            course.term.toLowerCase().includes(searchTerm.toLowerCase());    
-            
-            const matchesAcademicUnits = filterAcademicUnits
+            course.term.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesAcademicUnits = filterAcademicUnits
             ? course.academic_units === filterAcademicUnits
             : true;
 
-            const matchesCredits = filterCredits
+        const matchesCredits = filterCredits
             ? course.credits === parseInt(filterCredits)
             : true;
 
-            const matchesTerm = filterTerm ? course.term === filterTerm : true;
+        const matchesTerm = filterTerm ? course.term === filterTerm : true;
 
-            return matchesSearchTerm && matchesAcademicUnits && matchesCredits && matchesTerm;
+        return matchesSearchTerm && matchesAcademicUnits && matchesCredits && matchesTerm;
+    });
+
+    const groupedFilteredCourses = (() => {
+        const grouped = filteredCourses.reduce((acc, course) => {
+            const units = course.academic_units || "Unknown";
+            if (!acc[units]) acc[units] = [];
+            acc[units].push(course);
+            return acc;
+        }, {} as GroupedCourses);
+
+        Object.keys(grouped).forEach(unit => {
+            grouped[unit].sort((a, b) =>
+                a.course_title.localeCompare(b.course_title)
+            );
         });
 
-        const groupedFilteredCourses = (() => {
-            const grouped = filteredCourses.reduce((acc, course) => {
-                const units = course.academic_units || "Unknown";
-                if (!acc[units]) acc[units] = [];
-                acc[units].push(course);
-                return acc;
-            }, {} as GroupedCourses);
-    
-            Object.keys(grouped).forEach(unit => {
-                grouped[unit].sort((a, b) => 
-                    a.course_title.localeCompare(b.course_title)
-                );
-            });
-    
-            return grouped;
-        })();
+        return grouped;
+    })();
 
-        useEffect(() => {
-            if (!loading) {
-                if (isAuthenticated === false) {
-                    router.push("/");
-                } else if (isAuthenticated && accountType === "advisor") {
-                    alert("Access Denied, must have a valid student account to reach this page");
-                    router.push("/");
-                }
+    useEffect(() => {
+        if (!loading) {
+            if (isAuthenticated === false) {
+                router.push("/");
+            } else if (isAuthenticated && accountType === "advisor") {
+                alert("Access Denied, must have a valid student account to reach this page");
+                router.push("/");
             }
-        }, [loading, isAuthenticated, accountType, router]); 
+        }
+    }, [loading, isAuthenticated, accountType, router]);
 
-        if (loading) {
-            return <div className="flex justify-center items-center h-screen text-lg font-bold">Loading...</div>;
-        }
-    
-        if (isAuthenticated === false || accountType !== "student") {
-            return null;
-        }
+    if (loading) {
+        return <div className="flex justify-center items-center h-screen text-lg font-bold">Loading...</div>;
+    }
+
+    if (isAuthenticated === false || accountType !== "student") {
+        return null;
+    }
 
 
     return (
@@ -183,8 +183,8 @@ const AllCoursesPage = () => {
                         <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
                     </header>
 
-                    <div className="flex flex-col bg-red-00">
-                        <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+                    <nav className="flex flex-col bg-red-00">
+                        <div className="bg-gray-300 p-4 flex justify-center space-x-8 w-full">
                             <Button
                                 onClick={() => router.push("/")}
                                 variation="primary"
@@ -212,11 +212,11 @@ const AllCoursesPage = () => {
                                 className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
                                 All Courses
                             </Button>
-                        </nav>
-                    </div>
+                        </div>
+                    </nav>
 
                     {/* Courses Display */}
-                    <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto"> 
+                    <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto">
                         <h1 className="text-2xl text-black font-bold mb-4">Available WPI Courses</h1>
 
                         {/* Search and Filters Section */}
@@ -277,7 +277,7 @@ const AllCoursesPage = () => {
                         {/* Displaying filtered and grouped courses */}
                         <div className="w-full text-black">
                             {filteredCourses.length === 0 ? (
-                                <p>No courses match your search or filter criteria.</p>  
+                                <p>No courses match your search or filter criteria.</p>
                             ) : (
                                 Object.keys(groupedFilteredCourses).map((unit) => (
                                     <div key={unit} className="mb-6">

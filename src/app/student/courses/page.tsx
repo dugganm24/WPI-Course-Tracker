@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
+import Select from 'react-select';
 
 Amplify.configure(outputs);
 
@@ -74,8 +75,8 @@ interface Course {
     course_id: number;
     term: string | null;
     grade: string | null;
-    course_section_owner: string;
-    academic_units: string;
+    course_title: string;
+    credits: string;
     requirement_types: string[];
 }
 
@@ -104,6 +105,7 @@ interface SelectedCourseWithGrade {
     grade: string;
 }
 
+
 const CoursesPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [accountType, setAccountType] = useState<string | null>(null);
@@ -117,6 +119,10 @@ const CoursesPage = () => {
     const [requirementMinimums, setRequirementMinimums] = useState<Record<string, number>>({});
     const [editedGrades, setEditedGrades] = useState<Record<number, string>>({});
     const [removedCourses, setRemovedCourses] = useState<Set<number>>(new Set());
+    const [showMessageModal, setShowMessageModal] = useState(false);
+    const [advisorEmail, setAdvisorEmail] = useState<string | null>(null);
+    const [messageText, setMessageText] = useState("");
+    const [sendingMessage, setSendingMessage] = useState(false);
     const router = useRouter();
 
 
@@ -170,10 +176,19 @@ const CoursesPage = () => {
     };
 
     const handleUndoSelect = (reqType: string, index: number) => {
+        const removedCourse = selectedCourses[reqType]?.[index]?.course;
+
         setSelectedCourses(prev => ({
             ...prev,
             [reqType]: prev[reqType].map((val, i) => (i === index ? null : val))
         }));
+
+        if (removedCourse) {
+            setRecommendations(prev => ({
+                ...prev,
+                [reqType]: [...(prev[reqType] || []), removedCourse] // Optionally sort if needed
+            }));
+        }
     };
 
     const handleEnrollClick = async () => {
@@ -188,15 +203,15 @@ const CoursesPage = () => {
         // 1. Include newly selected courses
         for (const slots of Object.values(selectedCourses)) {
             slots.forEach((entry) => {
-              if (entry) {
-                payload.push({
-                  student_id: sid,
-                  course_id: String(entry.course.id),
-                  grade: entry.grade || "",
-                });
-              }
+                if (entry) {
+                    payload.push({
+                        student_id: sid,
+                        course_id: String(entry.course.id),
+                        grade: entry.grade || "",
+                    });
+                }
             });
-          }
+        }
 
         // 2. Include updated grades
         courses.forEach((course) => {
@@ -261,39 +276,85 @@ const CoursesPage = () => {
         }
     };
 
-    const fetchRecommendedForType = async (reqType: string) => {
-        if (!studentID || recommendations[reqType]) return;
+
+    const fetchAllRecommendations = useCallback(async () => {
+        if (!studentID) return;
+
         try {
             const response = await fetch("https://89p1ojcq9g.execute-api.us-east-2.amazonaws.com/dev/student/recommendCourses", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    studentID,
-                    requirementType: reqType,
-                }),
+                body: JSON.stringify({ studentID }),
+            });
+
+            const responseData = await response.json();
+
+            // Explicitly handle both scenarios
+            const parsed = responseData.body ? JSON.parse(responseData.body) : responseData;
+
+            interface RecommendationResponse {
+                coursesByRequirement: Record<string, Array<{
+                    id: number;
+                    course_id: string;
+                    course_title?: string;
+                }>>;
+            }
+
+            const recsByType: RecommendationResponse['coursesByRequirement'] = parsed.coursesByRequirement || {};
+
+            const mapped: Record<string, SuggestedCourse[]> = {};
+            for (const [reqType, recs] of Object.entries(recsByType)) {
+                mapped[reqType] = recs.map((c) => ({
+                    id: c.id,
+                    course_id: c.course_id,
+                    course_name: c.course_title || "Course Name",
+                    requirement_type: reqType,
+                }));
+            }
+
+            setRecommendations(mapped);
+        } catch (err) {
+            console.error("Failed to fetch recommendations:", err);
+            setRecommendations({});
+        }
+    }, [studentID]);
+
+    const fetchAdvisorAndSendMessage = async (sendMessage = false) => {
+        if (!studentID) return;
+
+        try {
+            const response = await fetch("https://el96dlmu39.execute-api.us-east-2.amazonaws.com/dev/student/requestAdvisorHelp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(
+                    sendMessage
+                        ? { studentID, messageBody: messageText }
+                        : { studentID }
+                ),
             });
 
             const data = await response.json();
-            const parsed = data.body ? JSON.parse(data.body) : data;
 
-            if (Array.isArray(parsed.courses)) {
-                setRecommendations(prev => ({
-                    ...prev,
-                    [reqType]: parsed.courses.map((c: { id: number; course_id: string; course_section_owner?: string }) => ({
-                        id: c.id,
-                        course_id: c.course_id,
-                        course_name: c.course_section_owner || "Course Name",
-                        requirement_type: reqType,
-                    }))
-                }));
+            if (!response.ok) {
+                throw new Error(data.error || "Request failed.");
+            }
+
+            if (!sendMessage) {
+                setAdvisorEmail(data.advisorEmail);
+                setShowMessageModal(true);
             } else {
-                setRecommendations(prev => ({ ...prev, [reqType]: [] }));
+                alert("Message sent successfully!");
+                setShowMessageModal(false);
+                setMessageText("");
             }
         } catch (err) {
-            console.error(`Failed to fetch recommendations for ${reqType}:`, err);
-            setRecommendations(prev => ({ ...prev, [reqType]: [] }));
+            console.error("Error:", err);
+            alert("Failed to send or fetch advisor email.");
+        } finally {
+            setSendingMessage(false);
         }
     };
+
 
     useEffect(() => {
         const checkAuthStatus = async () => {
@@ -343,10 +404,11 @@ const CoursesPage = () => {
             });
 
             setSelectedCourses(init);
+            await fetchAllRecommendations();
         };
 
         initSelections();
-    }, [groupedCourses, requirementMinimums, requirementCounts]);
+    }, [groupedCourses, requirementMinimums, requirementCounts, fetchAllRecommendations]);
 
     const sortedRequirementTypes = Object.keys(requirementCounts).sort(
         (a, b) => (priorityOrder[a] || 99) - (priorityOrder[b] || 99)
@@ -381,7 +443,7 @@ const CoursesPage = () => {
             </header>
 
             {/* Nav Bar */}
-            <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full mb-6">
+            <nav className="bg-gray-300 p-4 flex justify-center space-x-8 w-full mb-6">
                 <Button
                     onClick={() => router.push("/")}
                     variation="primary"
@@ -411,19 +473,61 @@ const CoursesPage = () => {
                 </Button>
             </nav>
 
-            {/* Enroll Header */}
             <div className="flex justify-between items-center mb-6 px-2">
                 <h1 className="text-3xl font-bold text-red-700">My Enrolled Courses</h1>
-                <Button
-                    className="bg-red-600 hover:bg-red-800 text-white font-semibold"
-                    onClick={handleEnrollClick}>
-                    Update Courses
-                </Button>
+                <div className="flex space-x-4">
+                    <Button
+                        className="nav-button"
+                        onClick={handleEnrollClick}
+                    >
+                        Update Courses
+                    </Button>
+                    <Button
+                        className="nav-button"
+                        onClick={() => fetchAdvisorAndSendMessage(false)}
+                    >
+                        Message My Advisor
+                    </Button>
+                </div>
             </div>
 
+            {showMessageModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+                        <h2 className="text-lg font-bold mb-2 text-red-600">Message Your Advisor</h2>
+                        <p className="text-sm mb-2 text-gray-600">
+                            <strong>To:</strong> {advisorEmail || "Loading..."}
+                        </p>
+                        <textarea
+                            value={messageText}
+                            onChange={(e) => setMessageText(e.target.value)}
+                            placeholder="Write your message here..."
+                            className="w-full h-32 border border-gray-300 rounded p-2 mb-4 text-black"
+                        />
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                                onClick={() => setShowMessageModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                                disabled={sendingMessage || !messageText.trim()}
+                                onClick={() => {
+                                    setSendingMessage(true);
+                                    fetchAdvisorAndSendMessage(true);
+                                }}
+                            >
+                                {sendingMessage ? "Sending..." : "Send"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
             {/* Course Sections */}
-
-
             <div className="mt-6">
                 {sortedRequirementTypes.map((reqType) => {
                     const enrolled = groupedCourses[reqType] || [];
@@ -439,11 +543,13 @@ const CoursesPage = () => {
                             </p>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {enrolled.map((course) => (
-                                    <div key={course.enrollment_id} className="bg-gray-100 border-l-4 border-red-500 shadow rounded p-4 w-full">
-                                        <h3 className="font-bold text-red-700">{course.display_course_id}</h3>
-                                        <p className="text-sm text-black">{course.course_section_owner}</p>
+                                    <div key={course.enrollment_id} className={`border-l-4 shadow rounded p-4 w-full
+                                        ${removedCourses.has(course.course_id) ? 'bg-red-100 border-red-700' : 'bg-gray-100 border-red-500'}
+                                    `}>
+                                        <h3 className={`font-bold text-red-700 ${removedCourses.has(course.course_id) ? 'line-through' : ''}`}>{course.display_course_id}</h3>
+                                        <p className="text-sm text-black">{course.course_title}</p>
                                         <p className="text-sm text-black">Term: {course.term}</p>
-                                        <p className="text-sm text-black">Units: {course.academic_units}</p>
+                                        <p className="text-sm text-black">Credits: {course.credits}</p>
 
                                         {/* Grade input for editing */}
                                         <div className="mt-2">
@@ -483,13 +589,14 @@ const CoursesPage = () => {
 
 
 
-                                {/* Recommended Slot Selections */}
+
+                                {/* Recomended Slot section */}
                                 {remaining.map((selected, i) => (
                                     <div key={i} className="bg-gray-300 border-l-4 border-dashed border-gray-500 rounded p-8 flex flex-col items-center">
                                         {selected ? (
                                             <>
-                                                <div className="text-gray-700 font-medium mb-2 text-center">
-                                                    {selected.course.course_id} - {selected.course.course_name}
+                                                <div className="text-black font-medium mb-2 text-center">
+                                                    {selected.course.course_name}
                                                 </div>
                                                 <input
                                                     type="text"
@@ -497,11 +604,11 @@ const CoursesPage = () => {
                                                     value={selected.grade}
                                                     onChange={(e) => {
                                                         const newGrade = e.target.value;
-                                                        setSelectedCourses(prev => ({
+                                                        setSelectedCourses((prev) => ({
                                                             ...prev,
                                                             [reqType]: prev[reqType].map((val, j) =>
                                                                 j === i && val ? { ...val, grade: newGrade } : val
-                                                            )
+                                                            ),
                                                         }));
                                                     }}
                                                     className="mt-2 p-1 border rounded text-sm text-black"
@@ -516,22 +623,30 @@ const CoursesPage = () => {
                                         ) : (
                                             <>
                                                 <label className="text-gray-800 italic mb-2">Empty Slot</label>
-                                                <select
-                                                    onClick={() => fetchRecommendedForType(reqType)}
-                                                    onChange={(e) => {
-                                                        const picked = recommendations[reqType]?.find(c => c.course_id === e.target.value);
-                                                        if (picked) handleCourseSelect(reqType, i, picked);
-                                                    }}
-                                                    className="p-2 border text-black rounded text-sm w-full"
-                                                    defaultValue=""
-                                                >
-                                                    <option value="" disabled>Select a course</option>
-                                                    {recommendations[reqType]?.map(course => (
-                                                        <option key={course.course_id} value={course.course_id}>
-                                                            {course.course_id} - {course.course_name}
-                                                        </option>
-                                                    ))}
-                                                </select>
+                                                <div className="w-full">
+                                                    <Select
+                                                        options={(recommendations[reqType] || []).map((course) => ({
+                                                            value: course.course_id,
+                                                            label: `${course.course_id} - ${course.course_name}`,
+                                                            course,
+                                                        }))}
+                                                        onChange={(option) => {
+                                                            if (option && option.course) {
+                                                                handleCourseSelect(reqType, i, option.course);
+                                                                setRecommendations((prev) => ({
+                                                                    ...prev,
+                                                                    [reqType]: prev[reqType].filter(
+                                                                        (c) => c.course_id !== option.course.course_id
+                                                                    ),
+                                                                }));
+                                                            }
+                                                        }}
+                                                        className="text-sm text-black"
+                                                        classNamePrefix="react-select"
+                                                        placeholder="Search or select a course..."
+                                                        isClearable
+                                                    />
+                                                </div>
                                             </>
                                         )}
                                     </div>
@@ -540,8 +655,8 @@ const CoursesPage = () => {
                         </div>
                     );
                 })}
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
