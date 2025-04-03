@@ -132,7 +132,7 @@ const AdvisorProgressPage = () => {
 
         {/* Nav Bar */}
         <div className="flex flex-col bg-red-00">
-            <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+            <nav className="bg-gray-300 p-4 flex justify-center space-x-8 w-full">
                 <Button
                     onClick={() => router.push("/")}
                     variation="primary"

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-import { fetchAuthSession, fetchUserAttributes} from "aws-amplify/auth";
+import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth";
 import { Menu, X } from "lucide-react";
 import { Amplify } from 'aws-amplify';
 import outputs from "../../../aws-exports";
@@ -83,7 +83,7 @@ const ProgressPage = () => {
 
     return (
         <>
-            <div className="min-h-screen flex bg-red-100">
+            <div className="min-h-screen flex bg-white">
                 {/* Sidebar */}
                 <div className={`fixed top-0 left-0 h-full bg-gray-700 w-64 transform ${sidebarOpen ? "translate-x-0" : "-translate-x-64"} transition-transform duration-300 ease-in-out shadow-lg z-50 overflow-y-auto`}>
                     <div className="flex justify-between items-center p-4 bg-red-600 text-white">
@@ -111,34 +111,22 @@ const ProgressPage = () => {
                         <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
                     </header>
 
-                    <div className="flex flex-col bg-red-00 min-h-screen">
-                        <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+                    <div className="flex flex-col bg-red-00">
+                        <nav className="bg-gray-300 p-4 flex justify-center space-x-8 w-full">
                             <Button
                                 onClick={() => router.push("/")}
                                 variation="primary"
-                                className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button">
+                                className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
+                            >
                                 Home
                             </Button>
                             <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/courses" : "/student/courses")}
+                                onClick={() => accountType && router.push("/advisor/students")}
                                 disabled={!accountType}
                                 variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                My Courses
-                            </Button>
-                            <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/progress" : "/student/progress")}
-                                disabled={!accountType}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                My Progress
-                            </Button>
-                            <Button
-                                onClick={() => accountType && router.push(accountType === "advisor" ? "/advisor/allcourses" : "/student/allcourses")}
-                                disabled={!accountType}
-                                variation="primary"
-                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button">
-                                All Courses
+                                className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+                            >
+                                View Students
                             </Button>
                         </nav>
                     </div>

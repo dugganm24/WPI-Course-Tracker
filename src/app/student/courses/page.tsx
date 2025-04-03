@@ -119,6 +119,10 @@ const CoursesPage = () => {
     const [requirementMinimums, setRequirementMinimums] = useState<Record<string, number>>({});
     const [editedGrades, setEditedGrades] = useState<Record<number, string>>({});
     const [removedCourses, setRemovedCourses] = useState<Set<number>>(new Set());
+    const [showMessageModal, setShowMessageModal] = useState(false);
+    const [advisorEmail, setAdvisorEmail] = useState<string | null>(null);
+    const [messageText, setMessageText] = useState("");
+    const [sendingMessage, setSendingMessage] = useState(false);
     const router = useRouter();
 
 
@@ -315,6 +319,43 @@ const CoursesPage = () => {
         }
     }, [studentID]);
 
+    const fetchAdvisorAndSendMessage = async (sendMessage = false) => {
+        if (!studentID) return;
+
+        try {
+            const response = await fetch("https://el96dlmu39.execute-api.us-east-2.amazonaws.com/dev/student/requestAdvisorHelp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(
+                    sendMessage
+                        ? { studentID, messageBody: messageText }
+                        : { studentID }
+                ),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Request failed.");
+            }
+
+            if (!sendMessage) {
+                setAdvisorEmail(data.advisorEmail);
+                setShowMessageModal(true);
+            } else {
+                alert("Message sent successfully!");
+                setShowMessageModal(false);
+                setMessageText("");
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            alert("Failed to send or fetch advisor email.");
+        } finally {
+            setSendingMessage(false);
+        }
+    };
+
+
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
@@ -402,7 +443,7 @@ const CoursesPage = () => {
             </header>
 
             {/* Nav Bar */}
-            <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full mb-6">
+            <nav className="bg-gray-300 p-4 flex justify-center space-x-8 w-full mb-6">
                 <Button
                     onClick={() => router.push("/")}
                     variation="primary"
@@ -432,19 +473,61 @@ const CoursesPage = () => {
                 </Button>
             </nav>
 
-            {/* Enroll Header */}
             <div className="flex justify-between items-center mb-6 px-2">
                 <h1 className="text-3xl font-bold text-red-700">My Enrolled Courses</h1>
-                <Button
-                    className="bg-red-600 hover:bg-red-800 text-white font-semibold"
-                    onClick={handleEnrollClick}>
-                    Update Courses
-                </Button>
+                <div className="flex space-x-4">
+                    <Button
+                        className="nav-button"
+                        onClick={handleEnrollClick}
+                    >
+                        Update Courses
+                    </Button>
+                    <Button
+                        className="nav-button"
+                        onClick={() => fetchAdvisorAndSendMessage(false)}
+                    >
+                        Message My Advisor
+                    </Button>
+                </div>
             </div>
 
+            {showMessageModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+                        <h2 className="text-lg font-bold mb-2 text-red-600">Message Your Advisor</h2>
+                        <p className="text-sm mb-2 text-gray-600">
+                            <strong>To:</strong> {advisorEmail || "Loading..."}
+                        </p>
+                        <textarea
+                            value={messageText}
+                            onChange={(e) => setMessageText(e.target.value)}
+                            placeholder="Write your message here..."
+                            className="w-full h-32 border border-gray-300 rounded p-2 mb-4 text-black"
+                        />
+                        <div className="flex justify-end space-x-4">
+                            <button
+                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                                onClick={() => setShowMessageModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                                disabled={sendingMessage || !messageText.trim()}
+                                onClick={() => {
+                                    setSendingMessage(true);
+                                    fetchAdvisorAndSendMessage(true);
+                                }}
+                            >
+                                {sendingMessage ? "Sending..." : "Send"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+
             {/* Course Sections */}
-
-
             <div className="mt-6">
                 {sortedRequirementTypes.map((reqType) => {
                     const enrolled = groupedCourses[reqType] || [];
