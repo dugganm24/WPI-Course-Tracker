@@ -15,12 +15,12 @@ const pool = mysql.createPool(MYSQL_CONFIG);
 exports.handler = async (event) => {
   const body = typeof event.body === 'string' ? JSON.parse(event.body) : event;
 
-  const { studentID, courseID, term } = body;
-  
-  if (!studentID || !courseID || !term) {
+  const { studentID, courseID } = body; 
+
+  if (!studentID || !courseID) { 
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Missing required fields: studentID, courseID, and term' }),
+      body: JSON.stringify({ error: 'Missing required fields: studentID and courseID' }), 
     };
   }
 
@@ -43,16 +43,18 @@ exports.handler = async (event) => {
       throw new Error(`No advisor assigned for student ${studentID}`);
     }
 
+    //Modified to get the course id without term
     const [courseRows] = await connection.execute(
-      'SELECT id FROM Courses WHERE course_id = ? AND term = ? AND credits IS NOT NULL AND credits <> 0 AND section_status = "open"',
-      [courseID, term]
+      'SELECT id, term FROM Courses WHERE course_id = ? AND credits IS NOT NULL AND credits <> 0 AND section_status = "open"',
+      [courseID]
     );
 
     if (courseRows.length === 0) {
-      throw new Error(`No valid course found for ID: ${courseID} in term: ${term}`);
+      throw new Error(`No valid course found for ID: ${courseID}`);
     }
 
     const coursePrimaryKey = courseRows[0].id;
+    const term = courseRows[0].term; //get the term from the course table.
 
     const [existingEnrollment] = await connection.execute(
       'SELECT * FROM Enrollment WHERE student_id = ? AND course_id = ? AND term = ?',
