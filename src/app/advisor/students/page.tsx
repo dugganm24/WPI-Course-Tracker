@@ -134,7 +134,7 @@ const ViewStudentsPage = () => {
                     </nav>
                 </div>
 
-                <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto bg-white">
+                <main className="flex-grow p-6 flex flex-col items-center overflow-y-auto bg-white ">
                     <h1 className="text-2xl text-black font-bold mb-4">Your Students</h1>
 
                     <div className="w-full text-black">
@@ -150,6 +150,7 @@ const ViewStudentsPage = () => {
                                         <p className="text-sm text-black">Degree Program: {student.degree_program !== null ? student.degree_program : 'null'}</p>
 
                                         {/* View Progress Button */}
+                                        <div className="flex space-x-4 mt-6">
                                         <Button
                                             onClick={() => router.push(`/advisor/student/${student.student_id}`)}
                                             variation="primary"
@@ -165,6 +166,7 @@ const ViewStudentsPage = () => {
                                             >
                                             View Enrollments
                                         </Button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
