@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Authenticator,
@@ -19,8 +19,8 @@ import { fetchAuthSession, getCurrentUser, fetchUserAttributes } from "aws-ampli
 Amplify.configure(outputs);
 
 const AuthenticatedUserActions = () => {
-  
-  const { user, signOut} = useAuthenticator();
+
+  const { user, signOut } = useAuthenticator();
 
   async function currentSession() {
     try {
@@ -60,7 +60,7 @@ const AuthenticatedUserActions = () => {
       }
     };
     fetchUserData();
-  }, );
+  },);
 
   if (!user) return null;
 
@@ -77,8 +77,63 @@ const AuthenticatedUserActions = () => {
   );
 };
 
-const UserNavigation = () => {
+const StudentNavigation = () => {
   const router = useRouter();
+  return (
+    <nav className="flex flex-col bg-red-00 w-screen">
+      <div className="bg-gray-300 p-4 flex justify-center space-x-8 w-full">
+        <Button
+          onClick={() => router.push("/")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          Home
+        </Button>
+        <Button
+          onClick={() => router.push("/student/courses")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          My Courses
+        </Button>
+        <Button
+          onClick={() => router.push("/student/progress")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          My Progress
+        </Button>
+        <Button
+          onClick={() => router.push("/student/allcourses")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          All Courses
+        </Button>
+      </div>
+    </nav>
+  );
+};
+
+const AdvisorNavigation = () => {
+  const router = useRouter();
+  return (
+    <div className="flex flex-col bg-red-00 w-screen">
+      <nav className="bg-gray-200 p-4 flex justify-center space-x-8 w-full">
+        <Button
+          onClick={() => router.push("/")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          Home
+        </Button>
+        <Button
+          onClick={() => router.push("/advisor/students")}
+          className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded nav-button"
+        >
+          Students
+        </Button>
+      </nav>
+    </div>
+  );
+};
+
+const UserNavigation = () => {
   const { user } = useAuthenticator();
   const [accountType, setAccountType] = useState<string | null>(null);
 
@@ -88,7 +143,6 @@ const UserNavigation = () => {
         const userAttributes = await fetchUserAttributes();
         const accountTypeValue = userAttributes["custom:account_type"];
         setAccountType(accountTypeValue ?? null);
-        console.log("Fetched Account Type:", accountTypeValue);
       } catch (error) {
         console.error("Error fetching account type:", error);
       }
@@ -99,49 +153,57 @@ const UserNavigation = () => {
     }
   }, [user]);
 
-  if (!user || !accountType) return null; // Ensures the navigation loads only when accountType is available
+  if (!user || !accountType) return null;
 
   return (
-    <div className="flex flex-col bg-red-00 min-h-screen">
-      <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
-        <Button
-          onClick={() => (window.location.href = "/")}
-          variation="primary"
-          className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
-        >
-          Home
-        </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/courses" : "/advisor/courses")
-          }
-          variation="primary"
-          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-        >
-          My Courses
-        </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/progress" : "/advisor/progress")
-          }
-          variation="primary"
-          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-        >
-          My Progress
-        </Button>
-        <Button
-          onClick={() =>
-            router.push(accountType === "student" ? "/student/allcourses" : "/advisor/allcourses")
-          }
-          variation="primary"
-          className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-        >
-          All Courses
-        </Button>
-      </nav>
-    </div>
+    <>
+      {accountType === "student" && <StudentNavigation />}
+      {accountType === "advisor" && <AdvisorNavigation />}
+    </>
   );
 };
+
+//   return (
+//     <div className="flex flex-col bg-red-00 min-h-screen">
+//       <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
+//         <Button
+//           onClick={() => (window.location.href = "/")}
+//           variation="primary"
+//           className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
+//         >
+//           Home
+//         </Button>
+//         <Button
+//           onClick={() =>
+//             router.push(accountType === "student" ? "/student/courses" : "/advisor/courses")
+//           }
+//           variation="primary"
+//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+//         >
+//           My Courses
+//         </Button>
+//         <Button
+//           onClick={() =>
+//             router.push(accountType === "student" ? "/student/progress" : "/advisor/progress")
+//           }
+//           variation="primary"
+//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+//         >
+//           My Progress
+//         </Button>
+//         <Button
+//           onClick={() =>
+//             router.push(accountType === "student" ? "/student/allcourses" : "/advisor/allcourses")
+//           }
+//           variation="primary"
+//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
+//         >
+//           All Courses
+//         </Button>
+//       </nav>
+//     </div>
+//   );
+// };
 
 const SignUpFormFields = ({ updateForm }: { updateForm: (field: string, value: string) => void }) => {
   const { validationErrors } = useAuthenticator();
@@ -242,18 +304,45 @@ const formFields = {
   }
 };
 
+const PostLoginIntro = () => {
+  const { user } = useAuthenticator();
+
+  if (!user) return null;
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      <h2 className="text-center text-4xl font-semibold mb-2 text-black my-2">Welcome to the WPI Course Tracker!</h2>
+      <p className="text-center text-gray-700">
+        This app helps you track your enrolled courses, monitor your academic progress, and explore all available courses at WPI. Use the navigation above to plan your degree, manage your learning path, and ensure you meet all requirements.
+      </p>
+      <p className="text-center text-gray-700 mb-4 my-4">
+        If you have any questions or need assistance, please reach out to your academic advisor.
+      </p>
+
+      <p className="text-center text-gray-700 mb-4 my-4">
+        Please reach out to William Tyrrell at wftyrrell64@gmail.com or Michael Duggan at mpduggan97@gmail.com to report bugs, request features, or provide feedback. Thank you!
+      </p>
+    </div>
+  );
+};
+
+
 export default function App() {
   return (
     <Authenticator.Provider>
+      
       <div className="min-h-screen flex flex-col bg-white">
-        <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6 mb-4">
+        <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6">
           <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
           <AuthenticatedUserActions />
         </header>
+
+        <UserNavigation />
+        <PostLoginIntro />
+        
+
         <div className="flex flex-col justify-center items-center flex-grow">
           <div className="max-w-md w-full flex flex-col items-center">
             <Authenticator initialState="signIn" components={components} formFields={formFields} className="w-full" />
-            <UserNavigation />
           </div>
         </div>
       </div>

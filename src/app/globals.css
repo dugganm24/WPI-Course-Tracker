@@ -44,9 +44,9 @@ body {
 }
 
 .nav-button{
-  background-color: #dc2626 !important; /* Red */
-  color: white !important; /* White text */
-  border: none !important; /* Remove blue borders */
+  background-color: transparent !important; /* Red */
+  color: black !important; /* White text */
+  border: 2px solid black !important; /* Remove blue borders */
   padding: 10px 15px;
   border-radius: 5px;
   font-weight: bold;
