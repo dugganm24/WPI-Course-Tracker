@@ -45,11 +45,11 @@ exports.handler = async (event) => {
     // 2. Get all enrollments for the student
     const [enrollments] = await connection.execute(
       `SELECT e.enrollment_id, e.display_course_id, e.course_id, e.term, e.grade,
-              c.course_section_owner, c.credits
+              c.course_title, c.credits
        FROM Enrollment e
        JOIN Courses c ON e.course_id = c.id
        WHERE e.student_id = ?
-       ORDER BY c.course_section_owner DESC`,
+       ORDER BY c.course_title DESC`,
       [studentID]
     );
 

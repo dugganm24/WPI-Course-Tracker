@@ -163,48 +163,6 @@ const UserNavigation = () => {
   );
 };
 
-//   return (
-//     <div className="flex flex-col bg-red-00 min-h-screen">
-//       <nav className="bg-gray-500 p-4 flex justify-center space-x-8 w-full">
-//         <Button
-//           onClick={() => (window.location.href = "/")}
-//           variation="primary"
-//           className="bg-red-500 hover:bg-red-900 text-white font-bold py-2 px-4 rounded nav-button"
-//         >
-//           Home
-//         </Button>
-//         <Button
-//           onClick={() =>
-//             router.push(accountType === "student" ? "/student/courses" : "/advisor/courses")
-//           }
-//           variation="primary"
-//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-//         >
-//           My Courses
-//         </Button>
-//         <Button
-//           onClick={() =>
-//             router.push(accountType === "student" ? "/student/progress" : "/advisor/progress")
-//           }
-//           variation="primary"
-//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-//         >
-//           My Progress
-//         </Button>
-//         <Button
-//           onClick={() =>
-//             router.push(accountType === "student" ? "/student/allcourses" : "/advisor/allcourses")
-//           }
-//           variation="primary"
-//           className="bg-red-500 hover:bg-red-800 text-white font-bold py-2 px-4 rounded nav-button"
-//         >
-//           All Courses
-//         </Button>
-//       </nav>
-//     </div>
-//   );
-// };
-
 const SignUpFormFields = ({ updateForm }: { updateForm: (field: string, value: string) => void }) => {
   const { validationErrors } = useAuthenticator();
   const [formData, setFormData] = useState({
@@ -310,7 +268,7 @@ const StudentPostLoginIntro = () => {
   if (!user) return null;
   return (
     <div className="p-6 max-w-3xl mx-auto">
-      <h2 className="text-center text-4xl font-semibold mb-2 text-black my-2">Welcome to the WPI Course Tracker!</h2>
+      <h2 className="text-center text-4xl font-semibold mb-2 text-black my-2">Welcome to WPI Course Tracker!</h2>
       <p className="text-center text-gray-700">
         This app helps you track your enrolled courses, monitor your academic progress, and explore all available courses at WPI. Use the navigation above to plan your degree, manage your learning path, and ensure you meet all requirements.
       </p>

@@ -13,12 +13,12 @@ const MYSQL_CONFIG = {
 const pool = mysql.createPool(MYSQL_CONFIG);
 
 exports.handler = async (event) => {
-  const { studentID, requirementType } = event;
+  const { studentID } = event;
 
-  if (!studentID || !requirementType) {
+  if (!studentID) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: 'Missing studentID or requirementType' }),
+      body: JSON.stringify({ error: 'Missing studentID' }),
     };
   }
 
@@ -42,7 +42,7 @@ exports.handler = async (event) => {
 
     const degreeProgram = studentRows[0].degree_program;
 
-    // 2. Get all course_ids the student is enrolled in
+    // 2. Get all enrolled course_ids
     const [enrollments] = await connection.execute(
       `SELECT c.course_id 
        FROM Enrollment e
@@ -50,63 +50,61 @@ exports.handler = async (event) => {
        WHERE e.student_id = ?`,
       [studentID]
     );
-    
+
     const enrolledDisplayCourseIDs = new Set(
       enrollments.map(row => row.course_id?.toUpperCase())
     );
 
-    const enrolledCourseIDs = new Set(enrollments.map(row => row.course_id));
-
-    // 3. Get course labels for the specified requirementType
+    // 3. Get all requirement types and course labels for the student's program
     const [requirements] = await connection.execute(
-      `SELECT course_label 
+      `SELECT requirement_type, course_label 
        FROM Degree_Requirements 
-       WHERE degree_program = ? AND requirement_type = ?`,
-      [degreeProgram, requirementType]
+       WHERE degree_program = ?`,
+      [degreeProgram]
     );
 
-    if (requirements.length === 0) {
-      return {
-        statusCode: 404,
-        body: JSON.stringify({ message: 'Requirement type not found for this degree program' }),
-      };
+    const labelMap = {};
+    for (const { requirement_type, course_label } of requirements) {
+      const labels = course_label
+        ? course_label.split(',').map(l => l.trim().toUpperCase())
+        : [];
+      if (!labelMap[requirement_type]) labelMap[requirement_type] = new Set();
+      labels.forEach(label => labelMap[requirement_type].add(label));
     }
 
-    const courseLabels = requirements
-      .flatMap(req =>
-        req.course_label ? req.course_label.split(',').map(c => c.trim().toUpperCase()) : []
-      );
-
-    if (courseLabels.length === 0) {
+    if (Object.keys(labelMap).length === 0) {
       return {
         statusCode: 200,
-        body: JSON.stringify({ requirement_type: requirementType, courses: [] }),
+        body: JSON.stringify({ coursesByRequirement: {} }),
       };
     }
 
-    // 4. Get eligible courses
+    // 4. Fetch all eligible courses
     const [eligibleCourses] = await connection.execute(
-      `SELECT id, course_id, course_id, course_section_owner, credits, term, section_status 
+      `SELECT id, course_id, course_title, course_section_owner, credits, term, section_status 
        FROM Courses
        WHERE credits IS NOT NULL AND credits > 0
          AND term IS NOT NULL
          AND section_status = 'open'`
     );
 
-    // 5. Filter: match courseLabels and not already enrolled, and no duplicate display_course_id
-    const seenLabels = new Set();
-    const matchingCourses = [];
+    // 5. Filter & group recommendations by requirement_type
+    const result = {};
+    const seenPerReq = {};
 
     for (const course of eligibleCourses) {
       const displayId = course.course_id?.toUpperCase();
-    
-      if (
-        courseLabels.includes(displayId) &&
-        !enrolledDisplayCourseIDs.has(displayId) &&
-        !seenLabels.has(displayId)
-      ) {
-        matchingCourses.push(course);
-        seenLabels.add(displayId);
+      if (!displayId || enrolledDisplayCourseIDs.has(displayId)) continue;
+
+      for (const [reqType, labelSet] of Object.entries(labelMap)) {
+        if (!labelSet.has(displayId)) continue;
+
+        if (!seenPerReq[reqType]) seenPerReq[reqType] = new Set();
+        if (seenPerReq[reqType].has(displayId)) continue;
+
+        if (!result[reqType]) result[reqType] = [];
+        result[reqType].push(course);
+        seenPerReq[reqType].add(displayId);
       }
     }
 
@@ -114,10 +112,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({
-        requirement_type: requirementType,
-        courses: matchingCourses,
-      }),
+      body: JSON.stringify({ coursesByRequirement: result }),
     };
   } catch (error) {
     console.error('Error generating recommendations: ', error);

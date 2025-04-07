@@ -3,7 +3,6 @@ const mysql = require('mysql2/promise');
 
 AWS.config.update({ region: 'us-east-2' });
 
-// MySQL Database Configuration
 const MYSQL_CONFIG = {
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -11,7 +10,6 @@ const MYSQL_CONFIG = {
   database: process.env.DB_NAME,
 };
 
-// Create a connection pool
 const pool = mysql.createPool(MYSQL_CONFIG);
 
 exports.handler = async (event) => {
@@ -26,19 +24,16 @@ exports.handler = async (event) => {
   const lastName = userAttributes.family_name;
   const wpiID = userAttributes["custom:wpiID"];
 
-  // Validate input parameters
   if (!username || !email || !accountType || !firstName || !lastName || !wpiID) {
     console.error("Missing parameters:", { username, email, accountType, firstName, lastName, wpiID });
-    return event; // Still return event even if you don't proceed
+    throw new Error("Missing required user attributes.");
   }
 
   let connection;
 
   try {
-    // Get a connection from the pool
     connection = await pool.getConnection();
 
-    // Check if the user already exists based on wpiID in Student or Advisor table
     const checkUserQuery = `
       SELECT student_id AS wpiID FROM Student WHERE student_id = ? 
       UNION 
@@ -49,10 +44,9 @@ exports.handler = async (event) => {
 
     if (existingUser.length > 0) {
       console.log("User already exists with wpiID:", wpiID);
-      return event;
+      throw new Error(`An account with WPI ID ${wpiID} already exists.`);
     }
 
-    // Insert user into the correct table based on accountType
     let insertQuery;
     let values;
 
@@ -70,22 +64,20 @@ exports.handler = async (event) => {
       values = [wpiID, username, email, firstName, lastName];
     } else {
       console.error("Invalid account type:", accountType);
-      return event;
+      throw new Error("Invalid account type.");
     }
 
-    // Execute the insert query
     await connection.execute(insertQuery, values);
-
     console.log("User successfully added:", username);
 
   } catch (error) {
-    console.error("Database error:", error);
-    // Still return event so Cognito doesn't fail the flow
+    console.error("PostConfirmation Lambda error:", error);
+    throw new Error(error.message || "Internal server error.");
   } finally {
     if (connection) {
-      await connection.release(); // Release the connection back to the pool
+      await connection.release();
     }
   }
 
-  return event; // Required for Cognito triggers
+  return event;
 };
