@@ -23,9 +23,10 @@ exports.handler = async (event) => {
   const firstName = userAttributes.given_name;
   const lastName = userAttributes.family_name;
   const wpiID = userAttributes["custom:wpiID"];
+  const major = userAttributes["custom:major"];
 
-  if (!username || !email || !accountType || !firstName || !lastName || !wpiID) {
-    console.error("Missing parameters:", { username, email, accountType, firstName, lastName, wpiID });
+  if (!username || !email || !accountType || !firstName || !lastName || !wpiID || !major) {
+    console.error("Missing parameters:", { username, email, accountType, firstName, lastName, wpiID, major });
     throw new Error("Missing required user attributes.");
   }
 
@@ -53,9 +54,9 @@ exports.handler = async (event) => {
     if (accountType.toLowerCase() === "student") {
       insertQuery = `
         INSERT INTO Student (student_id, username, email, first_name, last_name, degree_program) 
-        VALUES (?, ?, ?, ?, ?, 'ECE')
+        VALUES (?, ?, ?, ?, ?, ?)
       `;
-      values = [wpiID, username, email, firstName, lastName];
+      values = [wpiID, username, email, firstName, lastName, major];
     } else if (accountType.toLowerCase() === "advisor") {
       insertQuery = `
         INSERT INTO Advisor (advisor_id, username, email, first_name, last_name) 

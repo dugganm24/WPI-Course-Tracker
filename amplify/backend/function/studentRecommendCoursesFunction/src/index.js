@@ -79,32 +79,68 @@ exports.handler = async (event) => {
       };
     }
 
-    // 4. Fetch all eligible courses
-    const [eligibleCourses] = await connection.execute(
-      `SELECT id, course_id, course_title, course_section_owner, credits, term, section_status 
-       FROM Courses
-       WHERE credits IS NOT NULL AND credits > 0
-         AND term IS NOT NULL
-         AND section_status = 'open'`
-    );
+    // 4 Fetch eligible courses for non-FE requirements
+    const [eligibleCourses] = await connection.execute(`
+SELECT id, course_id, course_title, course_section_owner, credits, term, section_status 
+FROM Courses
+WHERE credits IS NOT NULL AND credits > 0
+  AND term IS NOT NULL
+  AND section_status = 'open'
+`);
 
-    // 5. Filter & group recommendations by requirement_type
+    // 5. Fetch eligible courses for FE separately
+    let feCourses = [];
+    if (Object.keys(labelMap).includes("FE")) {
+      const [feRows] = await connection.execute(`
+    SELECT id, course_title, term, credits, academic_units, course_id
+    FROM (
+        SELECT *,
+               ROW_NUMBER() OVER (
+                   PARTITION BY course_title, term, credits 
+                   ORDER BY id
+               ) as row_num
+        FROM Courses 
+        WHERE credits IS NOT NULL 
+          AND credits <> 0 
+          AND section_status = "open" 
+          AND term IS NOT NULL
+    ) AS UniqueCoursesSubquery
+    WHERE row_num = 1
+  `);
+      feCourses = feRows;
+    }
+
+    // 6. Filter & group recommendations by requirement_type
     const result = {};
     const seenPerReq = {};
 
-    for (const course of eligibleCourses) {
-      const displayId = course.course_id?.toUpperCase();
-      if (!displayId || enrolledDisplayCourseIDs.has(displayId)) continue;
+    for (const [reqType, labelSet] of Object.entries(labelMap)) {
+      result[reqType] = [];
 
-      for (const [reqType, labelSet] of Object.entries(labelMap)) {
-        if (!labelSet.has(displayId)) continue;
+      if (reqType === "FE") {
+        for (const course of feCourses) {
+          const displayId = course.course_id?.toUpperCase();
+          if (!displayId || enrolledDisplayCourseIDs.has(displayId)) continue;
 
-        if (!seenPerReq[reqType]) seenPerReq[reqType] = new Set();
-        if (seenPerReq[reqType].has(displayId)) continue;
+          if (!seenPerReq[reqType]) seenPerReq[reqType] = new Set();
+          if (seenPerReq[reqType].has(displayId)) continue;
 
-        if (!result[reqType]) result[reqType] = [];
-        result[reqType].push(course);
-        seenPerReq[reqType].add(displayId);
+          result[reqType].push(course);
+          seenPerReq[reqType].add(displayId);
+        }
+      } else {
+        for (const course of eligibleCourses) {
+          const displayId = course.course_id?.toUpperCase();
+          if (!displayId || enrolledDisplayCourseIDs.has(displayId)) continue;
+
+          if (!labelSet.has(displayId)) continue;
+
+          if (!seenPerReq[reqType]) seenPerReq[reqType] = new Set();
+          if (seenPerReq[reqType].has(displayId)) continue;
+
+          result[reqType].push(course);
+          seenPerReq[reqType].add(displayId);
+        }
       }
     }
 

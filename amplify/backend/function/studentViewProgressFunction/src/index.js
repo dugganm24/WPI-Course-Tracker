@@ -59,10 +59,12 @@ exports.handler = async (event) => {
     );
 
     const priorityOrder = {
-      "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "HUA": 5, "PE": 6,
-      "SS": 7, "MA": 8, "PH": 9, "CB": 10, "MBS": 11, "CS": 12,
-      "AED": 13, "FE": 14, "MQP": 15, "IQP": 16
+      "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "SYS": 5, "T&L": 6, "DE": 7, "SIC": 8, "CSE": 9, "BS": 10,
+      "PB": 11, "ST": 12, "AMA": 13, "ES": 14, "MS": 15, "AMS": 16, "TS": 17, "MEO": 18, "MEE": 19, "S": 20,
+      "HUA": 21, "PE": 22, "SS": 23, "MA": 24, "MMA": 25, "PH": 26, "CB": 27, "MBS": 28, "CS": 29,
+      "AED": 30, "FE": 31, "MQP": 32, "IQP": 33
     };
+    
 
     degreeRequirements.sort((a, b) => (priorityOrder[a.requirement_type] || 99) - (priorityOrder[b.requirement_type] || 99));
 

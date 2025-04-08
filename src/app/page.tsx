@@ -39,8 +39,10 @@ const AuthenticatedUserActions = () => {
         const userAttributes = await fetchUserAttributes();
         console.log("Email:", userAttributes.email);
         const accountType = userAttributes["custom:account_type"];
+        const major = userAttributes["custom:major"];
         const wpiID = userAttributes["custom:wpiID"];
         console.log("Account Type:", accountType);
+        console.log("Major:", major);
         console.log("First Name:", userAttributes.given_name);
         console.log("Last Name:", userAttributes.family_name);
         console.log("User Attributes:", userAttributes);
@@ -51,6 +53,7 @@ const AuthenticatedUserActions = () => {
           firstName: userAttributes.given_name ?? null,
           lastName: userAttributes.family_name ?? null,
           accountType: accountType ?? null,
+          major: major ?? null,
           wpiID: wpiID ?? 0,
         });
 
@@ -172,6 +175,8 @@ const SignUpFormFields = ({ updateForm }: { updateForm: (field: string, value: s
     email: "",
     password: "",
     accountType: "",
+    wpiID: "",
+    major: "",
   });
 
   const handleChange = (field: keyof typeof formData, value: string) => {
@@ -194,7 +199,24 @@ const SignUpFormFields = ({ updateForm }: { updateForm: (field: string, value: s
         <Radio value="student">Student</Radio>
         <Radio value="advisor">Advisor</Radio>
       </RadioGroupField>
+      <RadioGroupField
+        legend="Select Major"
+        name="custom:major"
+        isRequired
+        value={formData.major}
+        onChange={(e) => {
+          handleChange("major", e.target.value);
+          updateForm("custom:major", e.target.value); // <-- this is what makes it work
+        }}
+        errorMessage={validationErrors.major as string}
+        hasError={!!validationErrors.major}
+      >
+        <Radio value="ECE">ECE</Radio>
+        <Radio value="CS">CS</Radio>
+        <Radio value="ME">ME</Radio>
+      </RadioGroupField>
     </>
+    
   );
 };
 
@@ -339,7 +361,7 @@ export default function App() {
     <Authenticator.Provider>
       
       <div className="min-h-screen flex flex-col bg-white">
-        <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6">
+        <header className="bg-red-600 w-full py-4 flex justify-between items-center px-6 mb-2">
           <div className="text-white text-3xl font-bold">WPI Course Tracker</div>
           <AuthenticatedUserActions />
         </header>

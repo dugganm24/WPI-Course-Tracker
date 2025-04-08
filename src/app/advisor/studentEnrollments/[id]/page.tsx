@@ -17,10 +17,28 @@ const categoryLabels: Record<string, string> = {
     "CE": "Computer Engineering Courses",
     "ESD": "Engineering Science & Design",
     "EFE": "ECE Electives",
+    "SYS": "Systems Courses",
+    "T&L": "Theory and Languages",
+    "DE": "Design Courses",
+    "SIC": "Social Implications of Computing Courses",
+    "CSE": "Computer Science Core Courses",
+    "BS": "Basic Science Courses",
+    "PB": "Probability Courses",
+    "ST": "Statistics Courses",
+    "AMA": "Aditional Math Courses",
+    "ES": "Engineering Science Courses",
+    "MS": "Mechanical Systems Courses",
+    "AMS": "Aditional Mechanical Systems Course",
+    "TS": "Thermal Systems Courses",
+    "MEO": "Other Mechanical Engineering Courses",
+    "MEE": "Mechancical Engineering Elective Courses",
+    "S": "Science Courses",
     "HUA": "Humanities & Arts",
     "PE": "Physical Education",
     "SS": "Social Sciences",
     "MA": "Mathematics",
+    "MMA": "Mathematics", 
+    // For ME majors
     "PH": "Physics",
     "CB": "Chemistry & Biology",
     "MBS": "Math and Basic Science",
@@ -53,6 +71,7 @@ const categoryDescriptions: Record<string, string> = {
     "PE": "4 PE classes = 1/3 unit. or 3 Credits",
     "SS": " (2/3 unit, 6 Credits) ECON, ENV, GOV, PSY, SD, SOC, SS, STS, DEV and ID2050",
     "MA": "(7/3 units, 21 Credits) Courses with prefix: MA",
+    "AMA": "(6/3 units, 18 Credits) Courses with prefix: MA",
     "PH": "Physics classes related to fundamental science.",
     "CB": "(1/3 unit, 3 Credits) Course with prefix: CH or BB",
     "MBS": "(2/3 unit, 6 Credits) Courses with prefix: MA, PH, CH, BB, or GE",
@@ -60,14 +79,43 @@ const categoryDescriptions: Record<string, string> = {
     "AED": "(2/3 unit, 6 Credits) Courses at the 2000 level or above from: AE, AREN, BME, CE, CHE, CS, ECE, ES, FP, ME or RBE, excluding CS 2011, CS 2022 and CS 3043 ",
     "FE": "Any course used as a free elective to fill credit requirements.",
     "MQP": "Major Qualifying Project — your senior capstone experience.",
-    "IQP": "Interactive Qualifying Project — a humanities & social science project."
+    "IQP": "Interactive Qualifying Project — a humanities & social science project.",
+    "SYS": "B. Must include at least 1/3 unit (CS 3013, CS 4513, CS 4515, CS 4516),",
+    "T&L": "B. Must include at least 1/3 unit (CS 3133, CS 4120, CS 4123, CS 4533, CS 4536)",
+    "DE": "B. Must include at least 1/3 unit (CS 3041, CS 3431, CS 3733, CS 4233",
+
+    "SIC": `B. Must include at least 1/3 unit (CS 3043, GOV/ID 2314, GOV 2315, IMGD 2000, IMGD2001, RBE 3100). 
+    (If GOV/ID 2314, GOV 2315, IMGD 2000, IMGD2001, or RBE 3100 is used to satisfy this requirement, it does not countas part of the 6 units of CS).`,
+
+    "CSE": `A. Only CS 1101, CS 1102 and computer science courses at the 2000-level or higher will count 
+    towards the computer science requirement.CS 2119 will not count towards the computer science requirement
+    C. At least 5/3 units of the Computer Science requirement must consist of 4000-level or graduate CS courses, except for CS 5007. 
+    D. Only one of CS 2301 and CS 2303 may count towards the computer science requirement. Only one of CS 2102, CS 210X, and 2103 may count towards the computer science requirement.
+    : A cross-listed course may be counted toward only one of areas a, b, c above.`,
+
+    "BS": "At least three courses must come from BB, CH, GE, PH, where at least two courses are from one of these disciplines",
+    "PB": "Must include at least 1/3 unit from Probability (MA 2621, MA 2631)",
+    "ST": "Must include at least 1/3 unit from Statistics (MA 2611, MA 2612)",
+    "MMA" : "(6/3 units) Must include Differential & Integral Calculus and Ordinary Differential Equations",
+    "ES": "Courses satisfying the science requirement must come from the AE, BB, BME, CE, CH, CHE, ECE, ES, GE, ME, PH, RBE disciplines",
+
+    "MS": ` Must include at least 3/3 unit from Mechanical Systems (ES 2501, ES 2502, ES 3503)`,
+    "AMS" : "Must include at least 1/3 unit from Mechanical Systems (ME 4320, ME 4322, ME 4323, ME 4324, ME 4810)",
+    "TS" : "Must include at least 4/3 unit from Thermal Systems (ES 3001, ES 3004, ES 3003, ME 4422, ME 4429)",
+    "MEO" : "Must include at least 4/3 unit from Other Courses (ES 2002, ECE 2010, ME 3901, ME 3902, ME 2312, ME 4512, BME 1004, CS 1101, CS 1004)",
+    "MEE" : `Note 1: Elective courses from engineering disciplines may be selected at the 2000 or higher level. They may also include ES and ME courses at the 1000 level. Note 2: ES 3001 can be replaced by CH 3510 or PH 2101. If CH or PH is
+    used to cover thermodynamics, this course counts as a science; another
+    engineering elective is then required.
+    Note 3: ECE 2010 or any ECE course other than ECE 1799.`,
+    "S": `(3/3 units) One Chemistry and two Physics, OR one Physics and two Chemistry`
 };
 
 const priorityOrder: Record<string, number> = {
-    "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "HUA": 5, "PE": 6,
-    "SS": 7, "MA": 8, "PH": 9, "CB": 10, "MBS": 11, "CS": 12,
-    "AED": 13, "FE": 14, "MQP": 15, "IQP": 16
-};
+    "EE": 1, "CE": 2, "ESD": 3, "EFE": 4, "SYS": 5, "T&L": 6, "DE": 7, "SIC": 8, "CSE": 9, "BS": 10,
+    "PB": 11, "ST": 12, "AMA": 13, "ES": 14, "MS": 15, "AMS": 16, "TS": 17, "MEO": 18, "MEE": 19, "S": 20,
+    "HUA": 21, "PE": 22, "SS": 23, "MA": 24, "MMA": 25, "PH": 26, "CB": 27, "MBS": 28, "CS": 29,
+    "AED": 30, "FE": 31, "MQP": 32, "IQP": 33
+  };
 
 interface Course {
     enrollment_id: number;
