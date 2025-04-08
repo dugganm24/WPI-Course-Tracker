@@ -71,7 +71,7 @@ const categoryDescriptions: Record<string, string> = {
     "PE": "4 PE classes = 1/3 unit. or 3 Credits",
     "SS": " (2/3 unit, 6 Credits) ECON, ENV, GOV, PSY, SD, SOC, SS, STS, DEV and ID2050",
     "MA": "(7/3 units, 21 Credits) Courses with prefix: MA",
-    "AMA": "(6/3 units, 18 Credits) Courses with prefix: MA",
+    "AMA": "(5/3 units, 15 Credits) Courses with prefix: MA, At most four 1000-level Mathematics courses may be counted towards this requirement.",
     "PH": "Physics classes related to fundamental science.",
     "CB": "(1/3 unit, 3 Credits) Course with prefix: CH or BB",
     "MBS": "(2/3 unit, 6 Credits) Courses with prefix: MA, PH, CH, BB, or GE",
