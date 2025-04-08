@@ -20,7 +20,7 @@ const categoryLabels: Record<string, string> = {
     "DE": "Design Courses",
     "SIC": "Social Implications of Computing Courses",
     "CSE": "Computer Science Core Courses",
-    "BS": "Basic Science Courses",
+    "BS": "Basic Science or Engineering Science Courses",
     "PB": "Probability Courses",
     "ST": "Statistics Courses",
     "AMA": "Aditional Math Courses",

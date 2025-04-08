@@ -11,7 +11,6 @@ import outputs from "../../../../aws-exports";
 
 Amplify.configure(outputs);
 
-
 const categoryLabels: Record<string, string> = {
     "EE": "Electrical Engineering Courses",
     "CE": "Computer Engineering Courses",
@@ -22,7 +21,7 @@ const categoryLabels: Record<string, string> = {
     "DE": "Design Courses",
     "SIC": "Social Implications of Computing Courses",
     "CSE": "Computer Science Core Courses",
-    "BS": "Basic Science Courses",
+    "BS": "Basic Science or Engineering Science Courses",
     "PB": "Probability Courses",
     "ST": "Statistics Courses",
     "AMA": "Aditional Math Courses",
@@ -93,7 +92,10 @@ const categoryDescriptions: Record<string, string> = {
     D. Only one of CS 2301 and CS 2303 may count towards the computer science requirement. Only one of CS 2102, CS 210X, and 2103 may count towards the computer science requirement.
     : A cross-listed course may be counted toward only one of areas a, b, c above.`,
 
-    "BS": "At least three courses must come from BB, CH, GE, PH, where at least two courses are from one of these disciplines",
+    "BS": `Courses satisfying the science requirement must come from the AE,
+    BB, BME, CE, CH, CHE, ECE, ES, GE, ME, PH, RBE disciplines. At least three courses 
+    must come from BB, CH, GE, PH, where at least two courses are from one of these disciplines`,
+
     "PB": "Must include at least 1/3 unit from Probability (MA 2621, MA 2631)",
     "ST": "Must include at least 1/3 unit from Statistics (MA 2611, MA 2612)",
     "MMA" : "(6/3 units) Must include Differential & Integral Calculus and Ordinary Differential Equations",
