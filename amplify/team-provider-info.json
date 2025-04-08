@@ -68,7 +68,7 @@
         },
         "studentRequestAdvisorHelpFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
-          "s3Key": "amplify-builds/studentRequestAdvisorHelpFunction-63576b61572f38457564-build.zip"
+          "s3Key": "amplify-builds/studentRequestAdvisorHelpFunction-3476556168514f377231-build.zip"
         },
         "advisorRespondToStudentRequestFunction": {
           "deploymentBucketName": "amplify-wpicoursetracker-dev-807ed-deployment",
