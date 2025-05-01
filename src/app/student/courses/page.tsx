@@ -82,7 +82,7 @@ const categoryDescriptions: Record<string, string> = {
     "IQP": "Interactive Qualifying Project — a humanities & social science project.",
     "SYS": "B. Must include at least 1/3 unit (CS 3013, CS 4513, CS 4515, CS 4516),",
     "T&L": "B. Must include at least 1/3 unit (CS 3133, CS 4120, CS 4123, CS 4533, CS 4536)",
-    "DE": "B. Must include at least 1/3 unit (CS 3041, CS 3431, CS 3733, CS 4233",
+    "DE": "B. Must include at least 1/3 unit (CS 3041, CS 3431, CS 3733, CS 4233)",
 
     "SIC": `B. Must include at least 1/3 unit (CS 3043, GOV/ID 2314, GOV 2315, IMGD 2000, IMGD2001, RBE 3100). 
     (If GOV/ID 2314, GOV 2315, IMGD 2000, IMGD2001, or RBE 3100 is used to satisfy this requirement, it does not countas part of the 6 units of CS).`,
@@ -600,7 +600,6 @@ const CoursesPage = () => {
                                     `}>
                                         <h3 className={`font-bold text-red-700 ${removedCourses.has(course.course_id) ? 'line-through' : ''}`}>{course.display_course_id}</h3>
                                         <p className="text-sm text-black">{course.course_title}</p>
-                                        <p className="text-sm text-black">Term: {course.term}</p>
                                         <p className="text-sm text-black">Credits: {course.credits}</p>
 
                                         {/* Grade input for editing */}
